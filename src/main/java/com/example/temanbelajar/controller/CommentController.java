@@ -4,8 +4,12 @@ import com.example.temanbelajar.dto.ResponseBaseDto;
 import com.example.temanbelajar.model.Comment;
 import com.example.temanbelajar.repository.CommentRepository;
 import com.example.temanbelajar.service.CommentService;
+import com.example.temanbelajar.service.CommentServiceInterface;
 
 import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,11 +33,20 @@ public class CommentController {
     @Autowired 
     CommentService commentService;
 
+    // @Autowired
+    // CommentServiceInterface commentServiceInterface;
+
     @GetMapping("/{blogId}/comments")
-    public ResponseEntity<ResponseBaseDto> getComment(@PathVariable Long blogId) {
+    public ResponseEntity<ResponseBaseDto> getComment(@PathVariable Long blogId, Pageable pageable) {
         ResponseBaseDto response = new ResponseBaseDto<>();
 
-        response.setData(commentRepository.findCommentBlog(blogId));
+        //Page<Comment> comment = commentRepository.findByBlogId(blogId, pageable);
+
+        response.setData(commentRepository.findByBlogId(blogId));
+
+        //response.setData(commentRepository.findCommentBlog(blogId));
+        //response.setData(commentService.findCommentByBlog(blogId));
+        //response.setData(commentRepository.findByBlogId(blogId));
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
