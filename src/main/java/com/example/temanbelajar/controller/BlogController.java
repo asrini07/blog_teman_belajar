@@ -96,22 +96,17 @@ public class BlogController {
 
         for (String tag : tagtag) {
             Tags val = tagRepository.findByName(tag);
-            tags.add(val);
 
-            // val.setName(tag);
-            // tagRepository.save(val);
+            if(val.equals(null)) {
+                val.setName(tag);
+                tagRepository.save(val);
             //tagService.saveTag(val, tag);
-           
-
-        //    if(val.equals(null)) {
-        //         val.setName(tag);
-        //         tagRepository.save(val);
-
-        //         tags.add(val);
-        //     } else {
-                
-        //         tags.add(val);
-        //     }
+                tags.add(val);
+            } else {
+                    
+                tags.add(val);
+            
+            }
             
         }
 
