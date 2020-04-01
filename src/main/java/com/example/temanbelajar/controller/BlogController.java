@@ -97,11 +97,14 @@ public class BlogController {
         for (String tag : tagtag) {
             Tags val = tagRepository.findByName(tag);
 
-            if(val.equals(null)) {
-                val.setName(tag);
-                tagRepository.save(val);
-            //tagService.saveTag(val, tag);
-                tags.add(val);
+            if(val == null) {
+                Tags newtag = new Tags();
+
+                newtag.setName(tag);
+                tagRepository.save(newtag);
+
+                Tags tagId = tagRepository.findById(newtag.getId()).orElseThrow(() -> new ResourceNotFoundException("Tags", "id", newtag.getId()));
+                tags.add(tagId);
             } else {
                     
                 tags.add(val);
