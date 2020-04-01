@@ -23,5 +23,7 @@ public class BlogDto {
     @Size(min = 10, message = "Content min 10 character")
     @NotBlank
     private String content;
+
+    //private List<Tags> tag = new ArrayList<>();
     
 }
