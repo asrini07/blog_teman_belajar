@@ -63,7 +63,7 @@ public class AuthorController {
 
         try {
             
-            response.setData(authorRepository.save(authorData));
+            response.setData(authorService.save(authorData));
 
             return new ResponseEntity<>(response ,HttpStatus.OK);
 
@@ -165,7 +165,6 @@ public class AuthorController {
 
         try {
             author.setPassword(authorPassDto.getPassword());
-           // author.setPassword(authorDto.getPassword());
 
             Author updatePassword = authorService.changePassword(authorId, author);
                 
