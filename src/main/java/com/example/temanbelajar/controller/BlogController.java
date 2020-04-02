@@ -61,11 +61,6 @@ public class BlogController {
 
         try {
             
-           // Page<Blog> blog = blogRepository.findAll(pageable);
-            // response.setStatus(true);
-            // response.setCode(200);
-            // response.setMessage("success");
-            // response.setData(blog);
             response.setData(blogRepository.findAll());
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -84,7 +79,6 @@ public class BlogController {
 
     @PostMapping("/")
     public ResponseEntity<ResponseBaseDto> createBlog(@RequestBody Blog blogData) {
-    //public ResponseEntity<ResponseBaseDto> createBlog(@RequestBody BlogDto blogD) {
 
         ResponseBaseDto response = new ResponseBaseDto();
 
@@ -119,9 +113,6 @@ public class BlogController {
 
         try {
 
-            // response.setStatus(true);
-            // response.setCode(200);
-            // response.setMessage("success");
             response.setData(blogRepository.save(blogData));
 
             return new ResponseEntity<>(response ,HttpStatus.OK);
@@ -161,9 +152,6 @@ public class BlogController {
 
         try {
 
-            // response.setStatus(true);
-            // response.setCode(200);
-            // response.setMessage("success");
             response.setData(blogRepository.save(blogData));
 
             return new ResponseEntity<>(response ,HttpStatus.OK);
@@ -242,17 +230,6 @@ public class BlogController {
             blog.setTitle(blogData.getTitle());
             blog.setContent(blogData.getContent());
             
-            // blog.setTitle(blogData.getTitle());
-            // blog.setContent(blogData.getContent());
-            // blog.setImage(blogData.getImage());
-            // blog.setAuthor(blogData.getAuthor());
-            // blog.setCategories(blogData.getCategories());
-
-            // Blog updateBlog = blogRepository.save(blog);
-            
-            // response.setStatus(true);
-            // response.setCode(200);
-            // response.setMessage("success");
             response.setData(blogService.update(blogId, blog));
 
             return new ResponseEntity<>(response, HttpStatus.OK);
