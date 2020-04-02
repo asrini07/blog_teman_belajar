@@ -76,10 +76,10 @@ public class Blog extends AuditModel {
     )
     private List<Tags> tag = new ArrayList<>();
 
-    // @OneToMany(cascade = CascadeType.ALL,
-    //     fetch = FetchType.LAZY,
-    //     mappedBy = "post")
-    // private Set<Comment> comments = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "blog")
+    private Set<Comment> comments = new HashSet<>();
 
     
 }
