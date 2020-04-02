@@ -1,5 +1,6 @@
 package com.example.temanbelajar.service;
 
+import com.example.temanbelajar.model.Blog;
 import com.example.temanbelajar.model.Comment;
 import com.example.temanbelajar.repository.CommentRepository;
 
@@ -22,5 +23,9 @@ public class CommentService {
         return commentRepository.save(comment);
 
     }
+
+   
+
+    
     
 }
