@@ -152,6 +152,30 @@ public class CategoriesController {
         }
     }
 
+    @DeleteMapping("/")
+    public ResponseEntity<ResponseBaseDto> deleteCategoryRequest(@RequestBody Categories categoriesData) {
+
+        ResponseBaseDto response = new ResponseBaseDto();
+
+        Categories category = categoriesRepository.findById(categoriesData.getId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoriesData.getId()));
+
+        try {
+
+            //response.setData(categoriesRepository.deleteById(categoryId));
+            categoriesRepository.deleteById(categoriesData.getId());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+
+            response.setStatus(false);
+            response.setCode(500);
+            response.setMessage(e.getMessage());
+
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
     
 
     

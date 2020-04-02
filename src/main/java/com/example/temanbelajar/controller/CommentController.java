@@ -141,4 +141,26 @@ public class CommentController {
 
     }
 
+    @DeleteMapping("/{blogId}/comments")
+    public ResponseEntity<ResponseBaseDto> deleteCommentRequest(@PathVariable Long blogId, @RequestBody Comment commentData) {
+        ResponseBaseDto response = new ResponseBaseDto<>();
+
+        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ResourceNotFoundException("Blog", "id", blogId));
+
+        try {
+
+            commentRepository.deleteCommentId(commentData.getId(), blogId);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            response.setStatus(false);
+            response.setCode(500);
+            response.setMessage(e.getMessage());
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 }

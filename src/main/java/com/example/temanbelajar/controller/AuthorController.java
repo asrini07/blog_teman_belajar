@@ -183,6 +183,30 @@ public class AuthorController {
         }
     }
 
+    @DeleteMapping("/")
+    public ResponseEntity<ResponseBaseDto> deleteAuthorRequest(@RequestBody Author authorData) {
+
+        ResponseBaseDto response = new ResponseBaseDto();
+
+        Author author = authorRepository.findById(authorData.getId()).orElseThrow(() -> new ResourceNotFoundException("Author", "id", authorData.getId()));
+
+        try {
+
+            authorRepository.deleteById(authorData.getId());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+
+            response.setStatus(false);
+            response.setCode(500);
+            response.setMessage(e.getMessage());
+
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+
+        }
+    }
+
 
 
     
