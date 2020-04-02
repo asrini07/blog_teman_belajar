@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  * CommentController
  */
 @RestController
-@RequestMapping("/blogs")
+@RequestMapping("/posts")
 public class CommentController {
 
     @Autowired 
@@ -63,12 +63,6 @@ public class CommentController {
         Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ResourceNotFoundException("Blog", "id", blogId));
 
         try {
-
-           // response.setData(commentRepository.save(comment));
-           // Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ResourceNotFoundException("Blog", "id", blogId));
-            
-            // comment.setContent(commentData.getContent());
-            // comment.setGuestEmail(commentData.getGuestEmail());
 
             response.setData(blogRepository.findById(blogId).map(blogs -> {
                 commentData.setBlog(blogs);

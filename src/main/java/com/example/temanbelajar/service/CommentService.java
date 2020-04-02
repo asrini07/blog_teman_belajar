@@ -16,14 +16,6 @@ public class CommentService {
     @Autowired
     CommentRepository commentRepository;
 
-    // public Comment save(Blog blog, Comment commentData) {
-    //     // commentData.setGuest_email(commentData.getGuest_email());
-    //     // commentData.setContent(commentData.getContent());
-    //     commentData.setBlog(blog.getId());
-        
-    //     return commentRepository.save(commentData);
-    // }
-
     public Comment update(Long id, Comment comment) {
 
         comment.setId(id);
