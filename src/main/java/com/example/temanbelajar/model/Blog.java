@@ -44,6 +44,8 @@ public class Blog extends AuditModel {
 
     private transient List<Long> tags_id;
 
+    private transient List<String> tags_name;
+
     @Column(length = 150, nullable = false)
     @Size(min = 3, max = 150, message = "Lastname min 3 and max 150 character")
     @NotBlank

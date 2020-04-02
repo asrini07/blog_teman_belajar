@@ -23,5 +23,11 @@ public class TagService {
 
     }
 
+    public Tags saveTag(Tags tags, String tag_name) {
+        tags.setName(tag_name);
+        
+        return tagRepository.save(tags);
+    }
+
     
 }
