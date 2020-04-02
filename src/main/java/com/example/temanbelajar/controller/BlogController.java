@@ -245,6 +245,31 @@ public class BlogController {
         }
 
     }
+
+    @DeleteMapping("/")
+    public ResponseEntity<ResponseBaseDto> deleteBlogRequest(@RequestBody Blog blogData) {
+
+        ResponseBaseDto response = new ResponseBaseDto();
+
+        Blog blog = blogRepository.findById(blogData.getId()).orElseThrow(() -> new ResourceNotFoundException("Blog", "id", blogData.getId()));
+
+        try {
+            
+            blogRepository.deleteById(blogData.getId());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            
+            response.setStatus(false);
+            response.setCode(500);
+            response.setMessage(e.getMessage());
+
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+
+        }
+
+    }
     
     
 }

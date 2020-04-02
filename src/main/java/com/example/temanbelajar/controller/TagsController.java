@@ -149,6 +149,29 @@ public class TagsController {
         }
     }
 
+    @DeleteMapping("/")
+    public ResponseEntity<ResponseBaseDto> deleteTagsRequest(@RequestBody Tags tagData) {
+
+        ResponseBaseDto response = new ResponseBaseDto();
+
+        Tags tags = tagRepository.findById(tagData.getId()).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", tagData.getId()));
+
+        try {
+            
+            tagRepository.deleteById(tagData.getId());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+            
+        } catch (Exception e) {
+
+            response.setStatus(false);
+            response.setCode(500);
+            response.setMessage(e.getMessage());
+
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            
+        }
+    }
 
 
 
