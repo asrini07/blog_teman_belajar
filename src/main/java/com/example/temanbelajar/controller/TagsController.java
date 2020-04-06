@@ -6,6 +6,7 @@ import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
+import com.example.temanbelajar.dto.ResponsePagination;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Tags;
 import com.example.temanbelajar.repository.TagRepository;
@@ -39,10 +40,8 @@ public class TagsController {
     TagService tagService;
 
     //with pagination
-    @GetMapping("/")
-    public ResponseEntity<ConfigPage<ResponseBaseDto>> getAllTag(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
-
-        ResponseBaseDto response = new ResponseBaseDto();
+    @GetMapping()
+    public ResponsePagination<ConfigPage<Tags>> getAllTag(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
         try {
 
@@ -55,7 +54,7 @@ public class TagsController {
             }
 
             PageConverter<Tags> converter = new PageConverter<>();
-            String url = String.format("%s://%s:%d/api/tags",request.getScheme(),  request.getServerName(), request.getServerPort());
+            String url = String.format("%s://%s:%d/tags",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
 
@@ -65,17 +64,11 @@ public class TagsController {
 
             ConfigPage<Tags> respon = converter.convert(tags, url, search);
 
-            //response.setData(respon);
-
-            return new ResponseEntity<>(respon, HttpStatus.OK);
+            return ResponsePagination.ok(respon);
             
         } catch (Exception e) {
-            
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            return ResponsePagination.error("200", e.getMessage());
             
         }
     }
@@ -103,7 +96,7 @@ public class TagsController {
     //     }
     // }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<ResponseBaseDto> createTag(@RequestBody Tags tags){
 
         ResponseBaseDto response = new ResponseBaseDto();
