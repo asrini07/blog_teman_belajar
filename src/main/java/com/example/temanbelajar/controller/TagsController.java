@@ -1,12 +1,19 @@
 package com.example.temanbelajar.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.example.temanbelajar.config.pagination.ConfigPage;
+import com.example.temanbelajar.config.pagination.ConfigPageable;
+import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
+import com.example.temanbelajar.dto.ResponsePagination;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Tags;
 import com.example.temanbelajar.repository.TagRepository;
 import com.example.temanbelajar.service.TagService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,30 +39,64 @@ public class TagsController {
     @Autowired
     TagService tagService;
 
-    @GetMapping("/")
-    public ResponseEntity<ResponseBaseDto> getAllTag(){
-
-        ResponseBaseDto response = new ResponseBaseDto();
+    //with pagination
+    @GetMapping()
+    public ResponsePagination<ConfigPage<Tags>> getAllTag(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
         try {
 
-           // Page<Tags> tags = tagReporitory.findAll(pageable);
-            response.setData(tagRepository.findAll());
+            Page<Tags> tags;
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            if (param != null) {
+                tags = tagService.findByNameParams(ConfigPageable.convertToPageable(pageable), param);
+            } else {
+                tags = tagService.findAll(ConfigPageable.convertToPageable(pageable));
+            }
+
+            PageConverter<Tags> converter = new PageConverter<>();
+            String url = String.format("%s://%s:%d/tags",request.getScheme(),  request.getServerName(), request.getServerPort());
+
+            String search = "";
+
+            if(param != null){
+                search += "&param="+param;
+            }
+
+            ConfigPage<Tags> respon = converter.convert(tags, url, search);
+
+            return ResponsePagination.ok(respon);
             
         } catch (Exception e) {
-            
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            return ResponsePagination.error("200", e.getMessage());
             
         }
     }
 
-    @PostMapping("/")
+    // @GetMapping("/")
+    // public ResponseEntity<ResponseBaseDto> getAllTag(){
+
+    //     ResponseBaseDto response = new ResponseBaseDto();
+
+    //     try {
+
+    //        // Page<Tags> tags = tagReporitory.findAll(pageable);
+    //         response.setData(tagRepository.findAll());
+
+    //         return new ResponseEntity<>(response, HttpStatus.OK);
+            
+    //     } catch (Exception e) {
+            
+    //         response.setStatus(false);
+    //         response.setCode(500);
+    //         response.setMessage(e.getMessage());
+
+    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            
+    //     }
+    // }
+
+    @PostMapping()
     public ResponseEntity<ResponseBaseDto> createTag(@RequestBody Tags tags){
 
         ResponseBaseDto response = new ResponseBaseDto();

@@ -3,7 +3,13 @@ package com.example.temanbelajar.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.example.temanbelajar.config.pagination.ConfigPage;
+import com.example.temanbelajar.config.pagination.ConfigPageable;
+import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
+import com.example.temanbelajar.dto.ResponsePagination;
 import com.example.temanbelajar.dto.request.BlogDto;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Author;
@@ -18,6 +24,7 @@ import com.example.temanbelajar.service.BlogService;
 import com.example.temanbelajar.service.TagService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -54,30 +62,64 @@ public class BlogController {
     @Autowired
     TagService tagService;
 
-    @GetMapping("/")
-    public ResponseEntity<ResponseBaseDto> getAllBlog() {
-
-        ResponseBaseDto response = new ResponseBaseDto();
+    @GetMapping()
+    public ResponsePagination<ConfigPage<Blog>> getAllBlog(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
         try {
-            
-            response.setData(blogRepository.findAll());
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            Page<Blog> blogs;
+
+            if (param != null) {
+                blogs = blogService.findByNameParams(ConfigPageable.convertToPageable(pageable), param);
+            } else {
+                blogs = blogService.findAll(ConfigPageable.convertToPageable(pageable));
+            }
+
+            PageConverter<Blog> converter = new PageConverter<>();
+            String url = String.format("%s://%s:%d/blog",request.getScheme(),  request.getServerName(), request.getServerPort());
+
+            String search = "";
+
+            if(param != null){
+                search += "&param="+param;
+            }
+
+            ConfigPage<Blog> respon = converter.convert(blogs, url, search);
+
+            return ResponsePagination.ok(respon);
 
 
         } catch (Exception e) {
 
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
-
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            return ResponsePagination.error("200", e.getMessage());
         
         }
     }
 
-    @PostMapping("/")
+    // @GetMapping("/")
+    // public ResponseEntity<ResponseBaseDto> getAllBlog() {
+
+    //     ResponseBaseDto response = new ResponseBaseDto();
+
+    //     try {
+            
+    //         response.setData(blogRepository.findAll());
+
+    //         return new ResponseEntity<>(response, HttpStatus.OK);
+
+
+    //     } catch (Exception e) {
+
+    //         response.setStatus(false);
+    //         response.setCode(500);
+    //         response.setMessage(e.getMessage());
+
+    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        
+    //     }
+    // }
+
+    @PostMapping()
     public ResponseEntity<ResponseBaseDto> createBlog(@RequestBody Blog blogData) {
 
         ResponseBaseDto response = new ResponseBaseDto();
