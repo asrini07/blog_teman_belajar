@@ -61,45 +61,46 @@ public class FileController {
     @Autowired
     TagService tagService;
 
-    @PostMapping("/uploadFile")
-    public ResponseEntity<ResponseBaseDto> uploadFile(@RequestParam("image") MultipartFile file, @RequestParam Long author_id, @RequestParam Long categories_id, @RequestParam("tags_name") String tags_name, @RequestParam String title, @RequestParam String content) {
-        ResponseBaseDto response = new ResponseBaseDto();
+    // @PostMapping("/uploadFile")
+    // public ResponseEntity<ResponseBaseDto> uploadFile(@RequestParam("image") MultipartFile file, @RequestParam Long author_id, @RequestParam Long categories_id, @RequestParam("tags_name") String tags_name, @RequestParam String title, @RequestParam String content) {
+    //     ResponseBaseDto response = new ResponseBaseDto();
 
-        Author author = authorRepository.findById(author_id).orElseThrow(() -> new ResourceNotFoundException("Author", "id", author_id));
-        Categories categories = categoriesRepository.findById(categories_id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categories_id));
+    //     Author author = authorRepository.findById(author_id).orElseThrow(() -> new ResourceNotFoundException("Author", "id", author_id));
+    //     Categories categories = categoriesRepository.findById(categories_id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categories_id));
 
-        // List<String> tagtag = tags_name;
-        // ArrayList<Tags> tags = new ArrayList<Tags>();
+    //     // List<String> tagtag = tags_name;
+    //     // ArrayList<Tags> tags = new ArrayList<Tags>();
 
-        // for (String tag : tagtag) {
-        //     Tags val = tagRepository.findByName(tag);
+    //     // for (String tag : tagtag) {
+    //     //     Tags val = tagRepository.findByName(tag);
 
-        //     if(val == null) {
-        //         Tags newtag = new Tags();
+    //     //     if(val == null) {
+    //     //         Tags newtag = new Tags();
 
-        //         newtag.setName(tag);
-        //         tagRepository.save(newtag);
+    //     //         newtag.setName(tag);
+    //     //         tagRepository.save(newtag);
 
-        //         Tags tagId = tagRepository.findById(newtag.getId()).orElseThrow(() -> new ResourceNotFoundException("Tags", "id", newtag.getId()));
-        //         tags.add(tagId);
-        //     } else {
+    //     //         Tags tagId = tagRepository.findById(newtag.getId()).orElseThrow(() -> new ResourceNotFoundException("Tags", "id", newtag.getId()));
+    //     //         tags.add(tagId);
+    //     //     } else {
                     
-        //         tags.add(val);
+    //     //         tags.add(val);
             
-        //     }
+    //     //     }
             
-        // }
+    //     // }
 
-        String fileName = fileStorageService.storeFile(file);
+    //     String fileName = fileStorageService.storeFile(file);
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
+    //     String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+    //             .path("/downloadFile/")
+    //             .path(fileName)
+    //             .toUriString();
+                
 
-        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize(), file.getName());
-    }
+    //     return new UploadFileResponse(fileName, fileDownloadUri,
+    //             file.getContentType(), file.getSize(), file.getName());
+    // }
 
     // @PostMapping("/uploadFile")
     // public UploadFileResponse uploadFile(@RequestParam("image") MultipartFile file) {
@@ -113,6 +114,19 @@ public class FileController {
     //     return new UploadFileResponse(fileName, fileDownloadUri,
     //             file.getContentType(), file.getSize(), file.getName());
     // }
+
+    @PostMapping("/uploadFile")
+    public UploadFileResponse uploadFile(@RequestParam("image") MultipartFile file) {
+        String fileName = fileStorageService.storeFile(file);
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/downloadFile/")
+                .path(fileName)
+                .toUriString();
+
+        return new UploadFileResponse(fileName, fileDownloadUri,
+                file.getContentType(), file.getSize(), file.getName());
+    }
 
     // @PostMapping("/uploadMultipleFiles")
     // public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
