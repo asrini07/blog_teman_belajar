@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -20,11 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public interface CommentRepository extends JpaRepository<Comment, Long>{
 
-    // @Query(value = "SELECT * from Comment WHERE blog_id = ?1", nativeQuery = true)
-    // List<Comment> findCommentBlog(Long blogId);
+    @Query(value = "SELECT * from Comment WHERE blog_id = ?1", nativeQuery = true)
+    List<Comment> findCommentBlog(Long blogId);
 
     @Query(value = "SELECT * from Comment WHERE blog_id = ?1", nativeQuery = true)
-    List<Comment> findCommentBlog(Pageable pageable, Long blogId);
+    Page<Comment> findCommentBlogPagination(Long blogId, Pageable pageable);
 
     @Modifying
     @Transactional
@@ -32,13 +33,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
     void deleteCommentId(Long id, Long blogId);
 
     Comment findByIdAndBlogId(Long id, Long blogId);
-
-    @Query("select e from #{#entityName} e where e.blog_id = ?1 AND e.content like %:param% OR "
-    + "e.guest_email like %:param% ")
-    Page<Comment> findByNameParamsBlog(Pageable pageable, String param, Long blogId);
     
-    @Query("select e from #{#entityName} e where e.id = ?1 AND e.blog_id = ?2 AND e.content like %:param% OR "
-    + "e.guest_email like %:param% ")
-	Page<Comment> findByNameParamsComment(Pageable pageable, String param, Long id, Long blogId);
+    @Query(value = "SELECT * from comment WHERE blog_id = ?1 AND guest_email like %?2%" ,nativeQuery = true )
+    Page<Comment> findByNameParamsBlog(Long blogId, Pageable pageable, String param);
+
 
 }

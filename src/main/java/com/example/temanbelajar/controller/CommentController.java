@@ -51,27 +51,20 @@ public class CommentController {
     BlogRepository blogRepository;
 
     @GetMapping("/{blogId}/comments")
-    //public ResponseEntity<ResponseBaseDto> getComment(@PathVariable Long blogId) {
     public ResponsePagination<ConfigPage<Comment>> getComment(@PathVariable Long blogId, ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
-        // ResponseBaseDto response = new ResponseBaseDto<>();
 
-        // List<Comment> comment = commentRepository.findCommentBlog(blogId);
-
-        // response.setData(comment);
-
-        // return new ResponseEntity<>(response, HttpStatus.OK);
         try {
 
             Page<Comment> comment;
 
             if (param != null) {
-                comment = commentService.findByNameParamsBlog(ConfigPageable.convertToPageable(pageable), param, blogId);
+                comment = commentService.findByNameParamsBlog(blogId, ConfigPageable.convertToPageable(pageable), param);
             } else {
-                comment = commentService.findAll(ConfigPageable.convertToPageable(pageable), blogId);
+                comment = commentService.findAll(blogId, ConfigPageable.convertToPageable(pageable));
             }
 
             PageConverter<Comment> converter = new PageConverter<>();
-            String url = String.format("%s://%s:%d/posts/",request.getScheme(),  request.getServerName(), request.getServerPort());
+            String url = String.format("%s://%s:%d/posts/"+blogId+"/comments",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
 

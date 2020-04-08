@@ -30,10 +30,9 @@ public class CommentService {
 
     }
 
-    public Page<Comment> findAll(Pageable pageable, Long blogId) {
+    public Page<Comment> findAll(Long blogId, Pageable pageable) {
         try {
-            return commentRepository.findCommentBlog(pageable, blogId).map(this::fromEntity);
-            //return ((Page<Comment>) commentRepository.findCommentBlog(pageable, blogId)).map(this::fromEntity);
+            return commentRepository.findCommentBlogPagination(blogId, pageable).map(this::fromEntity);
 
         } catch (Exception e) {
 
@@ -54,24 +53,11 @@ public class CommentService {
     //     }
     // }
 
-    public Page<Comment> findByNameParamsBlog(Pageable pageable, String param, Long blogId) {
+    public Page<Comment> findByNameParamsBlog(Long blogId, Pageable pageable,  String param) {
 
         try {
             param = param.toLowerCase();
-            return commentRepository.findByNameParamsBlog(pageable, param, blogId).map(this::fromEntity);
-
-        } catch (Exception e) {
-
-            log.error(e.getMessage(), e);
-            throw e;
-        }
-    }
-
-    public Page<Comment> findByNameParamsComment(Pageable pageable, String param, Long id, Long blogId) {
-
-        try {
-            param = param.toLowerCase();
-            return commentRepository.findByNameParamsComment(pageable, param, id, blogId).map(this::fromEntity);
+            return commentRepository.findByNameParamsBlog(blogId, pageable, param).map(this::fromEntity);
 
         } catch (Exception e) {
 
