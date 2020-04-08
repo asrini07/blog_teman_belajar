@@ -2,8 +2,14 @@ package com.example.temanbelajar.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.example.temanbelajar.config.pagination.ConfigPage;
+import com.example.temanbelajar.config.pagination.ConfigPageable;
+import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
 import com.example.temanbelajar.dto.ResponseDto;
+import com.example.temanbelajar.dto.ResponsePagination;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Blog;
 import com.example.temanbelajar.model.Comment;
@@ -25,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -44,15 +51,49 @@ public class CommentController {
     BlogRepository blogRepository;
 
     @GetMapping("/{blogId}/comments")
-    public ResponseEntity<ResponseBaseDto> getComment(@PathVariable Long blogId) {
-        ResponseBaseDto response = new ResponseBaseDto<>();
+    public ResponsePagination<ConfigPage<Comment>> getComment(@PathVariable Long blogId, ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
-        List<Comment> comment = commentRepository.findCommentBlog(blogId);
+        try {
 
-        response.setData(comment);
+            Page<Comment> comment;
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+            if (param != null) {
+                comment = commentService.findByNameParamsBlog(blogId, ConfigPageable.convertToPageable(pageable), param);
+            } else {
+                comment = commentService.findAll(blogId, ConfigPageable.convertToPageable(pageable));
+            }
+
+            PageConverter<Comment> converter = new PageConverter<>();
+            String url = String.format("%s://%s:%d/posts/"+blogId+"/comments",request.getScheme(),  request.getServerName(), request.getServerPort());
+
+            String search = "";
+
+            if(param != null){
+                search += "&param="+param;
+            }
+
+            ConfigPage<Comment> respon = converter.convert(comment, url, search);
+
+            return ResponsePagination.ok(respon);
+
+
+        } catch (Exception e) {
+
+            return ResponsePagination.error("200", e.getMessage());
+        
+        }
     }
+
+    // @GetMapping("/{blogId}/comments")
+    // public ResponseEntity<ResponseBaseDto> getComment(@PathVariable Long blogId) {
+    //     ResponseBaseDto response = new ResponseBaseDto<>();
+
+    //     List<Comment> comment = commentRepository.findCommentBlog(blogId);
+
+    //     response.setData(comment);
+
+    //     return new ResponseEntity<>(response, HttpStatus.OK);
+    // }
 
 
     @PostMapping("/{blogId}/comments")
