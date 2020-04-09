@@ -31,9 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tags")
 public class TagsController {
 
-    // @Autowired
-    // TagRepository tagRepository;
-
     @Autowired
     TagService tagService;
 

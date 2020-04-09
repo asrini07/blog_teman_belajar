@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResponseTagDto {
+public class ResponseCategoriesDto {
 
     private Long id;
     private String name;

@@ -28,7 +28,7 @@ public class TagServiceImpl implements TagService {
     @Autowired
     private DateTime dateTime;
 
-    private static final String RESOURCE = "Tags";
+    private static final String RESOURCE = "Tag";
     private static final String FIELD = "id";
 
     @Override
@@ -164,9 +164,5 @@ public class TagServiceImpl implements TagService {
         return response;
         
     }
-
-    
-
-
 
 }

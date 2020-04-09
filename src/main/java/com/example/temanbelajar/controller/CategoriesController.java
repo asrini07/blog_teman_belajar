@@ -5,21 +5,16 @@ import javax.servlet.http.HttpServletRequest;
 import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
-// import com.example.temanbelajar.config.pagination.ConfigPage;
-// import com.example.temanbelajar.config.pagination.ConfigPageable;
-// import com.example.temanbelajar.config.pagination.PageConverter;
+
 import com.example.temanbelajar.dto.ResponseBaseDto;
 import com.example.temanbelajar.dto.ResponsePagination;
-import com.example.temanbelajar.exeption.ResourceNotFoundException;
+import com.example.temanbelajar.dto.request.RequestCategoriesDto;
+import com.example.temanbelajar.dto.response.ResponseCategoriesDto;
 import com.example.temanbelajar.model.Categories;
-import com.example.temanbelajar.repository.CategoriesRepository;
 import com.example.temanbelajar.service.CategoriesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,9 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/category")
 public class CategoriesController {
-
-    @Autowired
-    private CategoriesRepository categoriesRepository;
 
     @Autowired
     private CategoriesService categoriesService;
@@ -68,11 +60,11 @@ public class CategoriesController {
     // }
 
     @GetMapping()
-    public ResponsePagination<ConfigPage<Categories>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponsePagination<ConfigPage<ResponseCategoriesDto>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
         
         try {
 
-            Page<Categories> categories;
+            Page<ResponseCategoriesDto> categories;
 
             if (param != null) {
                 categories = categoriesService.findByNameParams(ConfigPageable.convertToPageable(pageable), param);
@@ -80,7 +72,7 @@ public class CategoriesController {
                 categories = categoriesService.findAll(ConfigPageable.convertToPageable(pageable));
             }
 
-            PageConverter<Categories> converter = new PageConverter<>();
+            PageConverter<ResponseCategoriesDto> converter = new PageConverter<>();
             String url = String.format("%s://%s:%d/category",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
@@ -89,7 +81,7 @@ public class CategoriesController {
                 search += "&param="+param;
             }
 
-            ConfigPage<Categories> respon = converter.convert(categories, url, search);
+            ConfigPage<ResponseCategoriesDto> respon = converter.convert(categories, url, search);
 
             return ResponsePagination.ok(respon);
 
@@ -103,123 +95,92 @@ public class CategoriesController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseBaseDto> detailCategory(@PathVariable(value = "id") Long categoryId) {
-
-        ResponseBaseDto response = new ResponseBaseDto();
+    public ResponseBaseDto<ResponseCategoriesDto> detailCategory(@PathVariable(value = "id") Long categoryId) {
 
         try {
 
-            Categories categories = categoriesRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
-            
-            response.setData(categories);
+            return ResponseBaseDto.ok(categoriesService.findById(categoryId));
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
-            
         } catch (Exception e) {
 
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
+            return ResponseBaseDto.error(400, e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
+
     }
 
 
     @PostMapping()
-    public ResponseEntity<ResponseBaseDto> createCategory(@RequestBody Categories categories) {
+    public ResponseBaseDto createCategory(@RequestBody RequestCategoriesDto categoriesData) {
        
-        ResponseBaseDto response = new ResponseBaseDto();
-
         try {
 
-            response.setData(categoriesRepository.save(categories));
+            Categories categories = categoriesService.save(categoriesData);
 
-            return new ResponseEntity<>(response ,HttpStatus.OK);
+            return ResponseBaseDto.saved(categories);
             
         } catch (Exception e) {
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            return ResponseBaseDto.error(400, e.getMessage());
+
         }
 
     }
 
-
     @PutMapping("{id}")
-    public ResponseEntity<ResponseBaseDto> updateCategory(@PathVariable(value = "id") Long categoryId, @RequestBody Categories categoriesData) {
-
-        ResponseBaseDto response = new ResponseBaseDto();
-
-        Categories category = categoriesRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+    public ResponseBaseDto updateCategory(@PathVariable(value = "id") Long categoryId, @RequestBody RequestCategoriesDto categoriesData) {
                 
             try {
 
-                Categories updateCategories = categoriesService.update(categoryId, categoriesData);
-                
-                response.setData(updateCategories);
+                Categories categories = categoriesService.update(categoryId, categoriesData);
 
-                return new ResponseEntity<>(response, HttpStatus.OK);
+                return ResponseBaseDto.saved(categories);
                 
             } catch (Exception e) {
 
-                response.setStatus(false);
-                response.setCode(500);
-                response.setMessage(e.getMessage());
-
-                return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+                return ResponseBaseDto.error(400, e.getMessage());
 
             }
     }
 
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<ResponseBaseDto> deleteCategory(@PathVariable(value = "id") Long categoryId) {
+    // @DeleteMapping("{id}")
+    // public ResponseEntity<ResponseBaseDto> deleteCategory(@PathVariable(value = "id") Long categoryId) {
 
-        ResponseBaseDto response = new ResponseBaseDto();
+    //     ResponseBaseDto response = new ResponseBaseDto();
 
-        Categories category = categoriesRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+    //     Categories category = categoriesRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
 
-        try {
+    //     try {
 
-            //response.setData(categoriesRepository.deleteById(categoryId));
-            categoriesRepository.deleteById(categoryId);
+    //         //response.setData(categoriesRepository.deleteById(categoryId));
+    //         categoriesRepository.deleteById(categoryId);
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+    //         return new ResponseEntity<>(response, HttpStatus.OK);
 
-        } catch (Exception e) {
+    //     } catch (Exception e) {
 
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
+    //         response.setStatus(false);
+    //         response.setCode(500);
+    //         response.setMessage(e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
-    }
+    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+    //     }
+    // }
 
     @DeleteMapping("/")
-    public ResponseEntity<ResponseBaseDto> deleteCategoryRequest(@RequestBody Categories categoriesData) {
-
-        ResponseBaseDto response = new ResponseBaseDto();
-
-        Categories category = categoriesRepository.findById(categoriesData.getId()).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoriesData.getId()));
+    public ResponseBaseDto deleteCategoryRequest(@RequestBody Categories categoriesData) {
 
         try {
 
-            //response.setData(categoriesRepository.deleteById(categoryId));
-            categoriesRepository.deleteById(categoriesData.getId());
+            categoriesService.deleteById(categoriesData.getId());
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return ResponseBaseDto.ok();
 
         } catch (Exception e) {
 
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
+            return ResponseBaseDto.error(400, e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
     }
 

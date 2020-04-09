@@ -10,11 +10,11 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class RequestTagDto {
+public class RequestCategoriesDto {
 
-    @Column(length = 20, nullable = false, unique = true)
-    @Size(min = 2, max = 20, message = "Name Tag min 3 and max 45 character")
-    @NotBlank(message = "Name Tag must not be empty")
+    @Column(length = 45, nullable = false)
+    @NotBlank(message = "Name Category must not be empty")
+    @Size(min = 3, max = 45, message = "Name Category min 3 and max 45 character")
     private String name;
 
 }
