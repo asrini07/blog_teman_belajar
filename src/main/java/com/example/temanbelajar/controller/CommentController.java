@@ -8,7 +8,6 @@ import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.ResponseDto;
 import com.example.temanbelajar.dto.ResponsePagination;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Blog;
@@ -79,7 +78,7 @@ public class CommentController {
 
         } catch (Exception e) {
 
-            return ResponsePagination.error("200", e.getMessage());
+            return ResponsePagination.error(200, e.getMessage());
         
         }
     }

@@ -40,6 +40,4 @@ public class Tags extends AuditModel {
     // @ManyToMany(mappedBy = "tag")
     // private List<Blog> blog = new ArrayList<>();
 
-
-    
 }

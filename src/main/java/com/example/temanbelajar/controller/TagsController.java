@@ -7,6 +7,8 @@ import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
 import com.example.temanbelajar.dto.ResponsePagination;
+import com.example.temanbelajar.dto.request.RequestTagDto;
+import com.example.temanbelajar.dto.response.ResponseTagDto;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Tags;
 import com.example.temanbelajar.repository.TagRepository;
@@ -33,27 +35,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tags")
 public class TagsController {
 
-    @Autowired
-    TagRepository tagRepository;
+    // @Autowired
+    // TagRepository tagRepository;
 
     @Autowired
     TagService tagService;
 
     //with pagination
     @GetMapping()
-    public ResponsePagination<ConfigPage<Tags>> getAllTag(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponsePagination<ConfigPage<ResponseTagDto>> getAllTag(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
         try {
 
-            Page<Tags> tags;
+            Page<ResponseTagDto> tags;
 
             if (param != null) {
-                tags = tagService.findByNameParams(ConfigPageable.convertToPageable(pageable), param);
+                tags = tagService.search(ConfigPageable.convertToPageable(pageable), param);
             } else {
                 tags = tagService.findAll(ConfigPageable.convertToPageable(pageable));
             }
 
-            PageConverter<Tags> converter = new PageConverter<>();
+            PageConverter<ResponseTagDto> converter = new PageConverter<>();
             String url = String.format("%s://%s:%d/tags",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
@@ -62,13 +64,13 @@ public class TagsController {
                 search += "&param="+param;
             }
 
-            ConfigPage<Tags> respon = converter.convert(tags, url, search);
+            ConfigPage<ResponseTagDto> response = converter.convert(tags, url, search);
 
-            return ResponsePagination.ok(respon);
+            return ResponsePagination.ok(response);
             
         } catch (Exception e) {
 
-            return ResponsePagination.error("200", e.getMessage());
+            return ResponsePagination.error(200, e.getMessage());
             
         }
     }
@@ -97,124 +99,90 @@ public class TagsController {
     // }
 
     @PostMapping()
-    public ResponseEntity<ResponseBaseDto> createTag(@RequestBody Tags tags){
-
-        ResponseBaseDto response = new ResponseBaseDto();
+    public ResponseBaseDto createTag(@RequestBody RequestTagDto request){
 
         try {
 
-            response.setData(tagRepository.save(tags));
-            return new ResponseEntity<>(response ,HttpStatus.OK);
+            Tags tags = tagService.save(request);
+
+            return ResponseBaseDto.saved(tags);
             
         } catch (Exception e) {
             
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
-
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            return ResponseBaseDto.error(400, e.getMessage());
 
         }
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseBaseDto> detailTags(@PathVariable(value = "id") Long tagId) {
-
-        ResponseBaseDto response = new ResponseBaseDto();
+    public ResponseBaseDto<ResponseTagDto> detailTags(@PathVariable(value = "id") Long tagId) {
 
         try {
-            
-            Tags tags = tagRepository.findById(tagId).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", tagId));
-            
-            response.setData(tags);
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return ResponseBaseDto.ok(tagService.findById(tagId));
 
         } catch (Exception e) {
 
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
-
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            return ResponseBaseDto.error(400, e.getMessage());
 
         }
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<ResponseBaseDto> deleteTags(@PathVariable(value = "id") Long tagId) {
+    // @DeleteMapping("{id}")
+    // public ResponseEntity<ResponseBaseDto> deleteTags(@PathVariable(value = "id") Long tagId) {
 
-        ResponseBaseDto response = new ResponseBaseDto();
+    //     ResponseBaseDto response = new ResponseBaseDto();
 
-        Tags tags = tagRepository.findById(tagId).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", tagId));
+    //     Tags tags = tagRepository.findById(tagId).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", tagId));
 
-        try {
+    //     try {
             
-            tagRepository.deleteById(tagId);
+    //         tagRepository.deleteById(tagId);
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+    //         return new ResponseEntity<>(response, HttpStatus.OK);
             
-        } catch (Exception e) {
+    //     } catch (Exception e) {
 
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
+    //         response.setStatus(false);
+    //         response.setCode(500);
+    //         response.setMessage(e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
             
-        }
-    }
+    //     }
+    // }
 
     @PutMapping("{id}")
-    public ResponseEntity<ResponseBaseDto> updateCategory(@PathVariable(value = "id") Long tagId, @RequestBody Tags tagData) {
-
-        ResponseBaseDto response = new ResponseBaseDto();
-
-        Tags tag = tagRepository.findById(tagId).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", tagId));
+    public ResponseBaseDto updateCategory(@PathVariable(value = "id") Long tagId, @RequestBody RequestTagDto tagData) {
 
         try {
 
-            Tags updateTags = tagService.update(tagId, tagData);
-                
-            response.setData(updateTags);
-            
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            Tags tags = tagService.update(tagId, tagData);
+
+            return ResponseBaseDto.saved(tags);
             
         } catch (Exception e) {
 
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
+            return ResponseBaseDto.error(400, e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
     }
 
     @DeleteMapping("/")
-    public ResponseEntity<ResponseBaseDto> deleteTagsRequest(@RequestBody Tags tagData) {
-
-        ResponseBaseDto response = new ResponseBaseDto();
-
-        Tags tags = tagRepository.findById(tagData.getId()).orElseThrow(() -> new ResourceNotFoundException("Tag", "id", tagData.getId()));
+    public ResponseBaseDto deleteTagsRequest(@RequestBody Tags tagData) {
 
         try {
             
-            tagRepository.deleteById(tagData.getId());
+            tagService.deleteById(tagData.getId());
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return ResponseBaseDto.ok();
             
         } catch (Exception e) {
 
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
-
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            return ResponseBaseDto.error(400, e.getMessage());
             
         }
     }
-
-
 
 }

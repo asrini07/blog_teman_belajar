@@ -91,7 +91,7 @@ public class BlogController {
 
         } catch (Exception e) {
 
-            return ResponsePagination.error("200", e.getMessage());
+            return ResponsePagination.error(200, e.getMessage());
         
         }
     }
