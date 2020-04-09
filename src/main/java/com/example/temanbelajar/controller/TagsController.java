@@ -9,15 +9,11 @@ import com.example.temanbelajar.dto.ResponseBaseDto;
 import com.example.temanbelajar.dto.ResponsePagination;
 import com.example.temanbelajar.dto.request.RequestTagDto;
 import com.example.temanbelajar.dto.response.ResponseTagDto;
-import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Tags;
-import com.example.temanbelajar.repository.TagRepository;
 import com.example.temanbelajar.service.TagService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
