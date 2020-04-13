@@ -93,7 +93,6 @@ public class CategoriesController {
 
     }
 
-
     @GetMapping("/{id}")
     public ResponseBaseDto<ResponseCategoriesDto> detailCategory(@PathVariable(value = "id") Long categoryId) {
 
