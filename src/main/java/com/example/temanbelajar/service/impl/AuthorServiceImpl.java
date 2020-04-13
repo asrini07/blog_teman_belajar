@@ -5,6 +5,8 @@ import com.example.temanbelajar.dto.request.RequestAuthorDto;
 import com.example.temanbelajar.dto.request.RequestAuthorPassDto;
 import com.example.temanbelajar.dto.request.RequestUpdateAuthorDto;
 import com.example.temanbelajar.dto.response.ResponseAuthorDto;
+import com.example.temanbelajar.dto.response.ResponseUpdateAuthorDto;
+import com.example.temanbelajar.dto.response.ResponseUpdatePasswordDto;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Author;
 import com.example.temanbelajar.repository.AuthorRepository;
@@ -131,7 +133,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author update(Long id, RequestUpdateAuthorDto request) {
+    public ResponseUpdateAuthorDto update(Long id, RequestUpdateAuthorDto request) {
 
         try {
 
@@ -141,7 +143,8 @@ public class AuthorServiceImpl implements AuthorService {
             BeanUtils.copyProperties(request, author);
             author.setUpdated_at(dateTime.getCurrentDate());
             authorRepository.save(author);
-            return author;
+            return fromEntityUpdateAuthor(author);
+            //return author;
 
         } catch (ResourceNotFoundException e) {
 
@@ -157,7 +160,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author changePassword(Long authorId, RequestAuthorPassDto authorData) {
+    public ResponseUpdatePasswordDto changePassword(Long authorId, RequestAuthorPassDto authorData) {
         try {
 
             Author author = authorRepository.findById(authorId)
@@ -167,7 +170,8 @@ public class AuthorServiceImpl implements AuthorService {
             author.setPassword(passwordEncoder().encode(author.getPassword()));
             author.setUpdated_at(dateTime.getCurrentDate());
             authorRepository.save(author);
-            return author;
+            return fromEntityChangePassword(author);
+            //return author;
 
         } catch (ResourceNotFoundException e) {
 
@@ -185,6 +189,22 @@ public class AuthorServiceImpl implements AuthorService {
     private ResponseAuthorDto fromEntity(Author author) {
 
         ResponseAuthorDto response = new ResponseAuthorDto();
+        BeanUtils.copyProperties(author, response);
+        return response;
+
+    }
+
+    private ResponseUpdatePasswordDto fromEntityChangePassword(Author author) {
+
+        ResponseUpdatePasswordDto response = new ResponseUpdatePasswordDto();
+        BeanUtils.copyProperties(author, response);
+        return response;
+
+    }
+
+    private ResponseUpdateAuthorDto fromEntityUpdateAuthor(Author author) {
+
+        ResponseUpdateAuthorDto response = new ResponseUpdateAuthorDto();
         BeanUtils.copyProperties(author, response);
         return response;
 

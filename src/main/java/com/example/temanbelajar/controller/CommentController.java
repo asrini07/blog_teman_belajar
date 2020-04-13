@@ -50,7 +50,7 @@ public class CommentController {
     BlogRepository blogRepository;
 
     @GetMapping("/{blogId}/comments")
-    public ResponsePagination<ConfigPage<Comment>> getComment(@PathVariable Long blogId, ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<CnfigPage<Comment>> getComment(@PathVariable Long blogId, ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
         try {
 
@@ -73,12 +73,12 @@ public class CommentController {
 
             ConfigPage<Comment> respon = converter.convert(comment, url, search);
 
-            return ResponsePagination.ok(respon);
+            return ResponseBaseDto.ok(respon);
 
 
         } catch (Exception e) {
 
-            return ResponsePagination.error(200, e.getMessage());
+            return ResponseBaseDto.error(200, e.getMessage());
         
         }
     }

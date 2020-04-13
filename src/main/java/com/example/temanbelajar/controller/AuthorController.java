@@ -10,6 +10,8 @@ import com.example.temanbelajar.dto.request.RequestAuthorDto;
 import com.example.temanbelajar.dto.request.RequestAuthorPassDto;
 import com.example.temanbelajar.dto.request.RequestUpdateAuthorDto;
 import com.example.temanbelajar.dto.response.ResponseAuthorDto;
+import com.example.temanbelajar.dto.response.ResponseUpdateAuthorDto;
+import com.example.temanbelajar.dto.response.ResponseUpdatePasswordDto;
 import com.example.temanbelajar.model.Author;
 import com.example.temanbelajar.service.AuthorService;
 
@@ -106,7 +108,7 @@ public class AuthorController {
 
         try {
 
-            Author author = authorService.update(authorId, authorData);
+            ResponseUpdateAuthorDto author = authorService.update(authorId, authorData);
 
             return ResponseBaseDto.saved(author);
             
@@ -123,7 +125,7 @@ public class AuthorController {
 
         try {
 
-            Author author = authorService.changePassword(authorId, authorPassDto);
+            ResponseUpdatePasswordDto author = authorService.changePassword(authorId, authorPassDto);
 
             return ResponseBaseDto.saved(author);
             

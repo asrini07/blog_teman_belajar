@@ -4,6 +4,8 @@ import com.example.temanbelajar.dto.request.RequestAuthorDto;
 import com.example.temanbelajar.dto.request.RequestAuthorPassDto;
 import com.example.temanbelajar.dto.request.RequestUpdateAuthorDto;
 import com.example.temanbelajar.dto.response.ResponseAuthorDto;
+import com.example.temanbelajar.dto.response.ResponseUpdateAuthorDto;
+import com.example.temanbelajar.dto.response.ResponseUpdatePasswordDto;
 import com.example.temanbelajar.model.Author;
 
 import org.springframework.data.domain.Page;
@@ -22,9 +24,9 @@ public interface AuthorService {
 
     Author save(RequestAuthorDto request);
 
-    Author update(Long authorId, RequestUpdateAuthorDto authorData);
+    ResponseUpdateAuthorDto update(Long authorId, RequestUpdateAuthorDto authorData);
 
-    Author changePassword(Long authorId, RequestAuthorPassDto authorData);
+    ResponseUpdatePasswordDto changePassword(Long authorId, RequestAuthorPassDto authorData);
 
     void deleteById(Long authorId);
     
