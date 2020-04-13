@@ -74,29 +74,6 @@ public class AuthorController {
 
     }
 
-    // @GetMapping("/")
-    // public ResponseEntity<ResponseBaseDto> getAllAuthor() {
-
-    //     ResponseBaseDto response = new ResponseBaseDto();
-
-    //     try {
-
-    //         //Page<Author> author = authorRepository.findAll(pageable);
-    //         response.setData(authorRepository.findAll());
-
-    //         return new ResponseEntity<>(response, HttpStatus.OK);
-            
-    //     } catch (Exception e) {
-
-    //         response.setStatus(false);
-    //         response.setCode(500);
-    //         response.setMessage(e.getMessage());
-
-    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        
-    //     }
-    // }
-
     @PostMapping()
     public ResponseBaseDto createAuthor(@RequestBody RequestAuthorDto authorData){
 
@@ -144,29 +121,6 @@ public class AuthorController {
 
         }
 
-        // ResponseBaseDto response = new ResponseBaseDto();
-
-        // Author author = authorRepository.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("Author", "id", authorId));
-
-        // try {
-        //     author.setFirst_name(authorDto.getNama_depan());
-        //     author.setLast_name(authorDto.getNama_belakang());
-        //     author.setUsername(authorDto.getUsername());
-        //     //Author updateAuthor = authorService.update(authorId, authorData);
-                
-        //     response.setData(authorService.update(authorId, author));
-
-        //     return new ResponseEntity<>(response, HttpStatus.OK);
-            
-        // } catch (Exception e) {
-
-        //     response.setStatus(false);
-        //     response.setCode(500);
-        //     response.setMessage(e.getMessage());
-
-        //     return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-
-        // }
     }
 
     @PutMapping("{id}/password")
@@ -184,28 +138,6 @@ public class AuthorController {
 
         }
 
-        // ResponseBaseDto response = new ResponseBaseDto();
-
-        // Author author = authorRepository.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("Author", "id", authorId));
-
-        // try {
-        //     author.setPassword(authorPassDto.getPassword());
-
-        //     Author updatePassword = authorService.changePassword(authorId, author);
-                
-        //     response.setData(updatePassword);
-
-        //     return new ResponseEntity<>(response, HttpStatus.OK);
-            
-        // } catch (Exception e) {
-
-        //     response.setStatus(false);
-        //     response.setCode(500);
-        //     response.setMessage(e.getMessage());
-
-        //     return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-
-        // }
     }
 
     @DeleteMapping("/")
