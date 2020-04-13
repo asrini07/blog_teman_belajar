@@ -6,20 +6,15 @@ import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.ResponsePagination;
 import com.example.temanbelajar.dto.request.RequestAuthorDto;
 import com.example.temanbelajar.dto.request.RequestAuthorPassDto;
 import com.example.temanbelajar.dto.request.RequestUpdateAuthorDto;
 import com.example.temanbelajar.dto.response.ResponseAuthorDto;
-import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Author;
-import com.example.temanbelajar.repository.AuthorRepository;
 import com.example.temanbelajar.service.AuthorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +36,7 @@ public class AuthorController {
     AuthorService authorService;
 
     @GetMapping()
-    public ResponsePagination<ConfigPage<ResponseAuthorDto>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<ConfigPage<ResponseAuthorDto>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
         
         try {
 
@@ -64,11 +59,11 @@ public class AuthorController {
 
             ConfigPage<ResponseAuthorDto> respon = converter.convert(author, url, search);
 
-            return ResponsePagination.ok(respon);
+            return ResponseBaseDto.ok(respon);
 
         } catch (Exception e) {
 
-            return ResponsePagination.error(200, e.getMessage());
+            return ResponseBaseDto.error(200, e.getMessage());
 
         }
 

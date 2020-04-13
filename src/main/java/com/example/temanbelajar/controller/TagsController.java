@@ -6,7 +6,6 @@ import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.ResponsePagination;
 import com.example.temanbelajar.dto.request.RequestTagDto;
 import com.example.temanbelajar.dto.response.ResponseTagDto;
 import com.example.temanbelajar.model.Tags;
@@ -36,7 +35,7 @@ public class TagsController {
 
     //with pagination
     @GetMapping()
-    public ResponsePagination<ConfigPage<ResponseTagDto>> getAllTag(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<ConfigPage<ResponseTagDto>> getAllTag(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
         try {
 
@@ -59,37 +58,14 @@ public class TagsController {
 
             ConfigPage<ResponseTagDto> response = converter.convert(tags, url, search);
 
-            return ResponsePagination.ok(response);
+            return ResponseBaseDto.ok(response);
             
         } catch (Exception e) {
 
-            return ResponsePagination.error(200, e.getMessage());
+            return ResponseBaseDto.error(200, e.getMessage());
             
         }
     }
-
-    // @GetMapping("/")
-    // public ResponseEntity<ResponseBaseDto> getAllTag(){
-
-    //     ResponseBaseDto response = new ResponseBaseDto();
-
-    //     try {
-
-    //        // Page<Tags> tags = tagReporitory.findAll(pageable);
-    //         response.setData(tagRepository.findAll());
-
-    //         return new ResponseEntity<>(response, HttpStatus.OK);
-            
-    //     } catch (Exception e) {
-            
-    //         response.setStatus(false);
-    //         response.setCode(500);
-    //         response.setMessage(e.getMessage());
-
-    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-            
-    //     }
-    // }
 
     @PostMapping()
     public ResponseBaseDto createTag(@RequestBody RequestTagDto request){

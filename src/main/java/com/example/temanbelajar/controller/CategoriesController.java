@@ -7,7 +7,6 @@ import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.ResponsePagination;
 import com.example.temanbelajar.dto.request.RequestCategoriesDto;
 import com.example.temanbelajar.dto.response.ResponseCategoriesDto;
 import com.example.temanbelajar.model.Categories;
@@ -35,32 +34,8 @@ public class CategoriesController {
     @Autowired
     private CategoriesService categoriesService;
 
-
-    // @GetMapping("/")
-    // public ResponseEntity<ResponseBaseDto> getAllCategoriesPagination(Pageable pageable) {
-        
-    //     ResponseBaseDto response = new ResponseBaseDto();
-
-    //     try {
-
-    //         Page<Categories> categories = categoriesRepository.findAll();
-    //         response.setData(categories);
-
-    //         return new ResponseEntity<>(response, HttpStatus.OK);
-
-    //     } catch (Exception e) {
-
-    //         response.setStatus(false);
-    //         response.setCode(500);
-    //         response.setMessage(e.getMessage());
-
-    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-    //     }
-
-    // }
-
     @GetMapping()
-    public ResponsePagination<ConfigPage<ResponseCategoriesDto>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<ConfigPage<ResponseCategoriesDto>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
         
         try {
 
@@ -83,11 +58,11 @@ public class CategoriesController {
 
             ConfigPage<ResponseCategoriesDto> respon = converter.convert(categories, url, search);
 
-            return ResponsePagination.ok(respon);
+            return ResponseBaseDto.ok(respon);
 
         } catch (Exception e) {
 
-            return ResponsePagination.error(200, e.getMessage());
+            return ResponseBaseDto.error(200, e.getMessage());
 
         }
 

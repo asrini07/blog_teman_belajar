@@ -35,7 +35,7 @@ public class AuthorServiceImpl implements AuthorService {
         return new BCryptPasswordEncoder();
     }
 
-    private static final String RESOURCE = "Category";
+    private static final String RESOURCE = "Author";
     private static final String FIELD = "id";
 
     @Override
