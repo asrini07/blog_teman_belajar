@@ -1,28 +1,19 @@
 package com.example.temanbelajar.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.ResponsePagination;
-import com.example.temanbelajar.exeption.ResourceNotFoundException;
-import com.example.temanbelajar.model.Blog;
+import com.example.temanbelajar.dto.request.RequestCommentDto;
+import com.example.temanbelajar.dto.response.ResponseCommentDto;
 import com.example.temanbelajar.model.Comment;
 import com.example.temanbelajar.repository.BlogRepository;
-import com.example.temanbelajar.repository.CommentRepository;
 import com.example.temanbelajar.service.CommentService;
-import com.example.temanbelajar.service.CommentServiceInterface;
 
 import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,28 +32,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
     @Autowired 
-    CommentRepository commentRepository;
-
-    @Autowired 
     CommentService commentService;
 
     @Autowired
     BlogRepository blogRepository;
 
     @GetMapping("/{blogId}/comments")
-    public ResponseBaseDto<CnfigPage<Comment>> getComment(@PathVariable Long blogId, ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<ConfigPage<ResponseCommentDto>> getComment(@PathVariable Long blogId, ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
         try {
 
-            Page<Comment> comment;
+            Page<ResponseCommentDto> comment;
 
             if (param != null) {
-                comment = commentService.findByNameParamsBlog(blogId, ConfigPageable.convertToPageable(pageable), param);
+                comment = commentService.findByNameParams(blogId, ConfigPageable.convertToPageable(pageable), param);
             } else {
                 comment = commentService.findAll(blogId, ConfigPageable.convertToPageable(pageable));
             }
 
-            PageConverter<Comment> converter = new PageConverter<>();
+            PageConverter<ResponseCommentDto> converter = new PageConverter<>();
             String url = String.format("%s://%s:%d/posts/"+blogId+"/comments",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
@@ -71,7 +59,7 @@ public class CommentController {
                 search += "&param="+param;
             }
 
-            ConfigPage<Comment> respon = converter.convert(comment, url, search);
+            ConfigPage<ResponseCommentDto> respon = converter.convert(comment, url, search);
 
             return ResponseBaseDto.ok(respon);
 
@@ -83,123 +71,70 @@ public class CommentController {
         }
     }
 
-    // @GetMapping("/{blogId}/comments")
-    // public ResponseEntity<ResponseBaseDto> getComment(@PathVariable Long blogId) {
-    //     ResponseBaseDto response = new ResponseBaseDto<>();
-
-    //     List<Comment> comment = commentRepository.findCommentBlog(blogId);
-
-    //     response.setData(comment);
-
-    //     return new ResponseEntity<>(response, HttpStatus.OK);
-    // }
-
-
     @PostMapping("/{blogId}/comments")
-    public ResponseEntity<ResponseBaseDto> createBlogComment(@PathVariable Long blogId, @RequestBody Comment commentData) {
-        
-        ResponseBaseDto response = new ResponseBaseDto();
-
-        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ResourceNotFoundException("Blog", "id", blogId));
+    public ResponseBaseDto createBlogComment(@PathVariable Long blogId, @RequestBody RequestCommentDto commentData) {
 
         try {
 
-            response.setData(blogRepository.findById(blogId).map(blogs -> {
-                commentData.setBlog(blogs);
-                return commentRepository.save(commentData);
-            }).orElseThrow(() -> new ResourceNotFoundException("Blog", "id", blogId)));
+            Comment comment = commentService.save(blogId, commentData);
 
-            return new ResponseEntity<>(response ,HttpStatus.OK);
-
+            return ResponseBaseDto.saved(comment);
+            
         } catch (Exception e) {
 
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage() );
-
-            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+            return ResponseBaseDto.error(400, e.getMessage());
 
         }
 
     }
 
     @GetMapping("/{blogId}/comments/{id}")
-    public ResponseEntity<ResponseBaseDto> getCommentById(@PathVariable Long blogId, @PathVariable Long id){
-        ResponseBaseDto response = new ResponseBaseDto<>();
-
-        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ResourceNotFoundException("Blog", "id", blogId));
-
-        Comment comment = commentRepository.findByIdAndBlogId(id, blogId);
-
-        response.setData(comment);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{blogId}/comments/{id}")
-    public ResponseEntity<ResponseBaseDto> deleteComment(@PathVariable Long blogId, @PathVariable Long id) {
-        ResponseBaseDto response = new ResponseBaseDto<>();
-
-        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ResourceNotFoundException("Blog", "id", blogId));
+    public ResponseBaseDto<ResponseCommentDto> getCommentById(@PathVariable Long blogId, @PathVariable Long id){
 
         try {
 
-            commentRepository.deleteCommentId(id, blogId);
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return ResponseBaseDto.ok(commentService.findByIdAndBlogId(id, blogId));
 
         } catch (Exception e) {
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseBaseDto.error(400, e.getMessage());
+
         }
 
     }
 
     @PutMapping("/{blogId}/comments/{commentId}")
-    public ResponseEntity<ResponseBaseDto> updateBlogComment(@PathVariable Long blogId, @PathVariable Long commentId, @RequestBody Comment commentData) {
-
-        ResponseBaseDto response = new ResponseBaseDto<>();
+    public ResponseBaseDto updateBlogComment(@PathVariable Long blogId, @PathVariable Long commentId, @RequestBody RequestCommentDto commentData) {
 
         try {
-            response.setData(commentRepository.findById(commentId).map(comment -> {
-                comment.setContent(commentData.getContent());
-                return commentRepository.save(comment);
-            }).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId)));
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            Comment comment = commentService.update(commentId, blogId, commentData);
 
+            return ResponseBaseDto.saved(comment);
+            
         } catch (Exception e) {
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseBaseDto.error(400, e.getMessage());
+
         }
 
     }
 
     @DeleteMapping("/{blogId}/comments")
-    public ResponseEntity<ResponseBaseDto> deleteCommentRequest(@PathVariable Long blogId, @RequestBody Comment commentData) {
-        ResponseBaseDto response = new ResponseBaseDto<>();
-
-        Blog blog = blogRepository.findById(blogId).orElseThrow(() -> new ResourceNotFoundException("Blog", "id", blogId));
+    public ResponseBaseDto deleteCommentRequest(@PathVariable Long blogId, @RequestBody Comment commentData) {
 
         try {
 
-            commentRepository.deleteCommentId(commentData.getId(), blogId);
+            commentService.deleteCommentId(commentData.getId(), blogId);
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return ResponseBaseDto.ok();
 
         } catch (Exception e) {
-            response.setStatus(false);
-            response.setCode(500);
-            response.setMessage(e.getMessage());
 
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseBaseDto.error(400, e.getMessage());
+
         }
+
 
     }
 

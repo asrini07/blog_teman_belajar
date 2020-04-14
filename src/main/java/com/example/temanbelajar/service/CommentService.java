@@ -12,16 +12,17 @@ import org.springframework.data.domain.Pageable;
  */
 public interface CommentService {
 
-    Page<ResponseCommentDto> findAll(Pageable pageable);
+    Page<ResponseCommentDto> findAll(Long blogId, Pageable pageable);
 
-    ResponseCommentDto findById(Long categoryId);
+    Page<ResponseCommentDto> findByNameParams(Long blogId, Pageable pageable, String param);
 
-    Page<ResponseCommentDto> findByNameParams(Pageable pageable, String param);
+    Comment save(Long blogId, RequestCommentDto commentData);
+    
+    ResponseCommentDto findByIdAndBlogId(Long commentId, Long blogId);
 
-    Comment save(RequestCommentDto request);
-
-    Comment update(Long categoryId, RequestCommentDto categoryData);
-
-    void deleteById(Long categoryId);  
+    void deleteCommentId(Long commentId, Long blogId);
+    
+    Comment update(Long commentId, Long blogId, RequestCommentDto commentData);
+    
     
 }

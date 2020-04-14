@@ -13,7 +13,8 @@ import lombok.Setter;
 public class ResponseCommentDto {
 
     private Long id;
-    private Blog blog;
+    private ResponseBlogDto blog;
+    //private transient Long blog_id;
     private String guest_email;
     private String content;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss", timezone="GMT+7")
