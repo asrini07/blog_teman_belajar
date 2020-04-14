@@ -16,34 +16,34 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class ResponsePagination<T> {
+public class ResponsePagination<Any> {
     
     private boolean status;
-    private String code;
+    private Integer code;
     private String message;
-    private T data;
+    private Any data;
 
-    public static ResponsePagination error(String code, String message) {
+    public static ResponsePagination error(Integer code, String message) {
         return new ResponsePagination<>(false, code, message, null);
     }
 
     public static ResponsePagination ok() {
-        return new ResponsePagination<>(true, "200", "success", null);
+        return new ResponsePagination<>(true, 200, "Success", null);
     }
 
     public static <I> ResponsePagination<I> ok(I body) {
-        return new ResponsePagination<I>(true, "200", "success", body);
+        return new ResponsePagination<I>(true, 200, "Success", body);
     }
 
     public static ResponsePagination created() {
-        return new ResponsePagination<>(true, "201", "created", null);
+        return new ResponsePagination<>(true, 201, "Created", null);
     }
 
     public static ResponsePagination created(String uri) {
         ResponsePagination<Map> baseResponse = new ResponsePagination<>();
         baseResponse.setStatus(true);
-        baseResponse.setCode("201");
-        baseResponse.setMessage("created");
+        baseResponse.setCode(201);
+        baseResponse.setMessage("Created");
         Map<String, String> map = new LinkedHashMap<>();
         map.put("uri", uri);
         baseResponse.setData(map);

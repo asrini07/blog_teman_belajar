@@ -12,8 +12,9 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface TagRepository extends JpaRepository<Tags, Long>{
 
-    Tags findByName(String name_tag);
-    
+    Tags findByName(String name);
+
     @Query("select e from #{#entityName} e where e.name like %:param% ")
-	Page<Tags> findByNameParams(Pageable pageable, String param);
+    Page<Tags> search(Pageable pageable, String param);
+    
 }

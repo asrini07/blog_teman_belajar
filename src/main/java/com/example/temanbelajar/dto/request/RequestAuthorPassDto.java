@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AuthorPassDto {
+public class RequestAuthorPassDto {
 
     @Column(length = 150, nullable = false)
     private String password;
