@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,11 +16,7 @@ import com.example.temanbelajar.dto.ResponseBaseDto;
 import com.example.temanbelajar.dto.request.RequestBlogDto;
 import com.example.temanbelajar.dto.request.RequestUpdateBlogDto;
 import com.example.temanbelajar.dto.response.ResponseBlogDto;
-import com.example.temanbelajar.exeption.ResourceNotFoundException;
-import com.example.temanbelajar.model.Author;
 import com.example.temanbelajar.model.Blog;
-import com.example.temanbelajar.model.Categories;
-import com.example.temanbelajar.model.Tags;
 import com.example.temanbelajar.repository.AuthorRepository;
 import com.example.temanbelajar.repository.BlogRepository;
 import com.example.temanbelajar.repository.CategoriesRepository;
@@ -69,7 +64,9 @@ public class BlogController {
     BlogService blogService;
 
     @GetMapping()
-    public ResponseBaseDto<ConfigPage<ResponseBlogDto>> getAllBlog(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<ConfigPage<ResponseBlogDto>> getAllBlog(ConfigPageable pageable, @RequestParam(required = false) String param,
+     @RequestParam(required = false) Long categories_id, @RequestParam(required = false) Long author_id, 
+     @RequestParam(required = false) String tag_name,  HttpServletRequest request){
 
         try {
 
@@ -77,6 +74,12 @@ public class BlogController {
 
             if (param != null) {
                 blogs = blogService.findByNameParams(ConfigPageable.convertToPageable(pageable), param);
+            } else if (author_id != null) {
+                blogs = blogService.findByAuthor(ConfigPageable.convertToPageable(pageable), author_id);
+            } else if (categories_id != null) {
+                blogs = blogService.findByCategory(ConfigPageable.convertToPageable(pageable), categories_id);
+            } else if (tag_name != null) {
+                blogs = blogService.findByTag(ConfigPageable.convertToPageable(pageable), tag_name);
             } else {
                 blogs = blogService.findAll(ConfigPageable.convertToPageable(pageable));
             }
@@ -86,8 +89,14 @@ public class BlogController {
 
             String search = "";
 
-            if(param != null){
+            if(param != null) {
                 search += "&param="+param;
+            } else if (author_id != null) {
+                search += "&author_id="+author_id;
+            } else if (categories_id != null) {
+                search += "&category_id="+categories_id;
+            } else if (tag_name != null) {
+                search += "&tag_name="+tag_name;
             }
 
             ConfigPage<ResponseBlogDto> respon = converter.convert(blogs, url, search);
@@ -101,6 +110,8 @@ public class BlogController {
         
         }
     }
+
+
 
     @PostMapping()
     public ResponseBaseDto createBlog(@RequestBody RequestBlogDto blogData) {
