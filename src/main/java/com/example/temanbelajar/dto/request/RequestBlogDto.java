@@ -1,5 +1,7 @@
 package com.example.temanbelajar.dto.request;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -7,12 +9,9 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * BlogDto
- */
 @Getter
 @Setter
-public class BlogDto {
+public class RequestBlogDto {
 
     @Column(length = 150, nullable = false)
     @Size(min = 3, max = 150, message = "Lastname min 3 and max 150 character")
@@ -24,6 +23,12 @@ public class BlogDto {
     @NotBlank
     private String content;
 
-    //private List<Tags> tag = new ArrayList<>();
-    
+    private Long author_id;
+
+    private transient Long categories_id;
+
+    private transient List<Long> tags_id;
+
+    private transient List<String> tags_name;
+
 }

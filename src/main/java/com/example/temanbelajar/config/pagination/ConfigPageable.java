@@ -20,6 +20,7 @@ public class ConfigPageable {
     public static Pageable convertToPageable(ConfigPageable configPageable) {
 
         if (configPageable != null) {
+            
             int page;
             if (configPageable.getPage() != null) {
                 if (configPageable.getPage() == 0) {
@@ -47,7 +48,9 @@ public class ConfigPageable {
             }
 
             return PageRequest.of(page, size);
+
         } else {
+
             if(configPageable.getSortBy() != null) {
                 if(configPageable.getSort().toLowerCase().equals("asc")){
                     return PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, configPageable.getSortBy()));
@@ -56,6 +59,7 @@ public class ConfigPageable {
                 return PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, configPageable.getSortBy() ));
             }
             return PageRequest.of(0, 20);
+
         }
         
     }
