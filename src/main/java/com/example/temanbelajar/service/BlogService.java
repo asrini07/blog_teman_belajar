@@ -19,6 +19,12 @@ public interface BlogService {
 
     Page<ResponseBlogDto> findByNameParams(Pageable pageable, String param);
 
+    Page<ResponseBlogDto> findByAuthor(Pageable pageable, Long author_id);
+    
+    Page<ResponseBlogDto> findByCategory(Pageable pageable, Long categories_id);
+
+    Page<ResponseBlogDto> findByTag(Pageable pageable, String tag_name);
+
     Blog save(RequestBlogDto request);
 
     Blog update(Long blogId, RequestUpdateBlogDto blogData);

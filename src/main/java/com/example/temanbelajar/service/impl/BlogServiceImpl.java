@@ -199,4 +199,40 @@ public class BlogServiceImpl implements BlogService{
         
     }
 
+    @Override
+    public Page<ResponseBlogDto> findByAuthor(Pageable pageable, Long author_id) {
+
+        try {
+            return blogRepository.findByAuthor(pageable, author_id).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+
+    }
+
+    @Override
+    public Page<ResponseBlogDto> findByCategory(Pageable pageable, Long categories_id) {
+
+        try {
+            return blogRepository.findByCategory(pageable, categories_id).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+
+    }
+
+    @Override
+    public Page<ResponseBlogDto> findByTag(Pageable pageable, String tag_name) {
+
+        try {
+            return blogRepository.findByTag(pageable, tag_name).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+
+    }
+
 }
