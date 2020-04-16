@@ -60,6 +60,9 @@ public class Blog extends AuditModel {
     @Column(columnDefinition = "mediumblob")
     private byte[] image;
 
+    @Column(name="image_url")
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
