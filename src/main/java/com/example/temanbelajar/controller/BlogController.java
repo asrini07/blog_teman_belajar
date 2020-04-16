@@ -1,11 +1,6 @@
 package com.example.temanbelajar.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,19 +11,23 @@ import com.example.temanbelajar.dto.ResponseBaseDto;
 import com.example.temanbelajar.dto.request.RequestBlogDto;
 import com.example.temanbelajar.dto.request.RequestUpdateBlogDto;
 import com.example.temanbelajar.dto.response.ResponseBlogDto;
+import com.example.temanbelajar.dto.response.ResponseUploadDto;
+import com.example.temanbelajar.dto.response.UploadFileResponse;
 import com.example.temanbelajar.model.Blog;
 import com.example.temanbelajar.repository.AuthorRepository;
 import com.example.temanbelajar.repository.BlogRepository;
 import com.example.temanbelajar.repository.CategoriesRepository;
 import com.example.temanbelajar.repository.TagRepository;
 import com.example.temanbelajar.service.BlogService;
+import com.example.temanbelajar.service.FileStorageService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * BlogController
@@ -62,6 +62,11 @@ public class BlogController {
 
     @Autowired
     BlogService blogService;
+
+    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @GetMapping()
     public ResponseBaseDto<ConfigPage<ResponseBlogDto>> getAllBlog(ConfigPageable pageable, @RequestParam(required = false) String param,
@@ -110,7 +115,6 @@ public class BlogController {
         
         }
     }
-
 
 
     @PostMapping()
@@ -218,53 +222,39 @@ public class BlogController {
 
     }
 
-    private final Logger logger = LoggerFactory.getLogger(BlogController.class);
 
-    //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = "/Users/aasasrini/Documents/vide";
+    @PutMapping("/updateFile/{id}")
+    public String updateFile(@RequestParam("image") MultipartFile file, @PathVariable(value = "id") Long blogId) {
 
-    // 3.1.1 Single file upload
-    @PostMapping("/upload")
-    // If not @RestController, uncomment this
-    //@ResponseBody
-    public ResponseEntity<?> uploadFile(
-            @RequestParam("file") MultipartFile uploadfile) {
+            String blog = blogService.updateFileBlog(file, blogId);
 
-        logger.debug("Single file upload!");
-
-        if (uploadfile.isEmpty()) {
-            return new ResponseEntity("please select a file!", HttpStatus.OK);
-        }
-
-        try {
-
-            saveUploadedFiles(Arrays.asList(uploadfile));
-
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity("Successfully uploaded - " +
-                uploadfile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
+            return blog;
 
     }
 
- 
+    @GetMapping("/downloadFile/{fileName:.+}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
 
-    private void saveUploadedFiles(List<MultipartFile> files) throws IOException {
+        //Load file as Resource
+        Resource resource = fileStorageService.loadFileAsResource(fileName);
 
-        for (MultipartFile file : files) {
-
-            if (file.isEmpty()) {
-                continue; //next pls
-            }
-
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
-            Files.write(path, bytes);
-
+        // Try to determine file's content type
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            logger.info("Could not determine file type.");
         }
 
+        // Fallback to the default content type if type could not be determined
+        if(contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
     
     
