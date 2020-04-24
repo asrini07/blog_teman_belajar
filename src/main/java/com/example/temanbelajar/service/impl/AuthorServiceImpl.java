@@ -1,12 +1,12 @@
 package com.example.temanbelajar.service.impl;
 
 import com.example.temanbelajar.config.DateTime;
-import com.example.temanbelajar.dto.request.RequestAuthorDto;
-import com.example.temanbelajar.dto.request.RequestAuthorPassDto;
-import com.example.temanbelajar.dto.request.RequestUpdateAuthorDto;
-import com.example.temanbelajar.dto.response.ResponseAuthorDto;
-import com.example.temanbelajar.dto.response.ResponseUpdateAuthorDto;
-import com.example.temanbelajar.dto.response.ResponseUpdatePasswordDto;
+import com.example.temanbelajar.dto.request.AuthorRequestDto;
+import com.example.temanbelajar.dto.request.AuthorRequestPassDto;
+import com.example.temanbelajar.dto.request.AuthorRequestUpdateDto;
+import com.example.temanbelajar.dto.response.AuthorResponseDto;
+import com.example.temanbelajar.dto.response.AuthorResponseUpdateDto;
+import com.example.temanbelajar.dto.response.PasswordResponseUpdateDto;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Author;
 import com.example.temanbelajar.repository.AuthorRepository;
@@ -41,7 +41,7 @@ public class AuthorServiceImpl implements AuthorService {
     private static final String FIELD = "id";
 
     @Override
-    public Page<ResponseAuthorDto> findAll(Pageable pageable) {
+    public Page<AuthorResponseDto> findAll(Pageable pageable) {
 
         try {
 
@@ -57,7 +57,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public ResponseAuthorDto findById(Long id) {
+    public AuthorResponseDto findById(Long id) {
 
         try {
 
@@ -80,7 +80,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Page<ResponseAuthorDto> findByNameParams(Pageable pageable, String param) {
+    public Page<AuthorResponseDto> findByNameParams(Pageable pageable, String param) {
 
         try {
 
@@ -114,7 +114,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Author save(RequestAuthorDto request) {
+    public Author save(AuthorRequestDto request) {
 
         try {
 
@@ -133,7 +133,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public ResponseUpdateAuthorDto update(Long id, RequestUpdateAuthorDto request) {
+    public AuthorResponseUpdateDto update(Long id, AuthorRequestUpdateDto request) {
 
         try {
 
@@ -160,7 +160,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public ResponseUpdatePasswordDto changePassword(Long authorId, RequestAuthorPassDto authorData) {
+    public PasswordResponseUpdateDto changePassword(Long authorId, AuthorRequestPassDto authorData) {
         try {
 
             Author author = authorRepository.findById(authorId)
@@ -186,25 +186,25 @@ public class AuthorServiceImpl implements AuthorService {
         }
     }
 
-    private ResponseAuthorDto fromEntity(Author author) {
+    private AuthorResponseDto fromEntity(Author author) {
 
-        ResponseAuthorDto response = new ResponseAuthorDto();
+        AuthorResponseDto response = new AuthorResponseDto();
         BeanUtils.copyProperties(author, response);
         return response;
 
     }
 
-    private ResponseUpdatePasswordDto fromEntityChangePassword(Author author) {
+    private PasswordResponseUpdateDto fromEntityChangePassword(Author author) {
 
-        ResponseUpdatePasswordDto response = new ResponseUpdatePasswordDto();
+        PasswordResponseUpdateDto response = new PasswordResponseUpdateDto();
         BeanUtils.copyProperties(author, response);
         return response;
 
     }
 
-    private ResponseUpdateAuthorDto fromEntityUpdateAuthor(Author author) {
+    private AuthorResponseUpdateDto fromEntityUpdateAuthor(Author author) {
 
-        ResponseUpdateAuthorDto response = new ResponseUpdateAuthorDto();
+        AuthorResponseUpdateDto response = new AuthorResponseUpdateDto();
         BeanUtils.copyProperties(author, response);
         return response;
 

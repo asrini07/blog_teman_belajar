@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ResponseUpdateAuthorDto {
+public class AuthorResponseUpdateDto {
 
     private Long id;
     private String first_name;

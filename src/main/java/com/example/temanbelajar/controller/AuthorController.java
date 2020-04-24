@@ -6,12 +6,12 @@ import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.request.RequestAuthorDto;
-import com.example.temanbelajar.dto.request.RequestAuthorPassDto;
-import com.example.temanbelajar.dto.request.RequestUpdateAuthorDto;
-import com.example.temanbelajar.dto.response.ResponseAuthorDto;
-import com.example.temanbelajar.dto.response.ResponseUpdateAuthorDto;
-import com.example.temanbelajar.dto.response.ResponseUpdatePasswordDto;
+import com.example.temanbelajar.dto.request.AuthorRequestDto;
+import com.example.temanbelajar.dto.request.AuthorRequestPassDto;
+import com.example.temanbelajar.dto.request.AuthorRequestUpdateDto;
+import com.example.temanbelajar.dto.response.AuthorResponseDto;
+import com.example.temanbelajar.dto.response.AuthorResponseUpdateDto;
+import com.example.temanbelajar.dto.response.PasswordResponseUpdateDto;
 import com.example.temanbelajar.model.Author;
 import com.example.temanbelajar.service.AuthorService;
 
@@ -38,11 +38,11 @@ public class AuthorController {
     AuthorService authorService;
 
     @GetMapping()
-    public ResponseBaseDto<ConfigPage<ResponseAuthorDto>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<ConfigPage<AuthorResponseDto>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
         
         try {
 
-            Page<ResponseAuthorDto> author;
+            Page<AuthorResponseDto> author;
 
             if (param != null) {
                 author = authorService.findByNameParams(ConfigPageable.convertToPageable(pageable), param);
@@ -50,7 +50,7 @@ public class AuthorController {
                 author = authorService.findAll(ConfigPageable.convertToPageable(pageable));
             }
 
-            PageConverter<ResponseAuthorDto> converter = new PageConverter<>();
+            PageConverter<AuthorResponseDto> converter = new PageConverter<>();
             String url = String.format("%s://%s:%d/author",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
@@ -59,7 +59,7 @@ public class AuthorController {
                 search += "&param="+param;
             }
 
-            ConfigPage<ResponseAuthorDto> respon = converter.convert(author, url, search);
+            ConfigPage<AuthorResponseDto> respon = converter.convert(author, url, search);
 
             return ResponseBaseDto.ok(respon);
 
@@ -72,7 +72,7 @@ public class AuthorController {
     }
 
     @PostMapping()
-    public ResponseBaseDto createAuthor(@RequestBody RequestAuthorDto authorData){
+    public ResponseBaseDto createAuthor(@RequestBody AuthorRequestDto authorData){
 
         try {
 
@@ -89,7 +89,7 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseBaseDto<ResponseAuthorDto> detailAuthor(@PathVariable(value = "id") Long authorId) {
+    public ResponseBaseDto<AuthorResponseDto> detailAuthor(@PathVariable(value = "id") Long authorId) {
 
         try {
 
@@ -104,11 +104,11 @@ public class AuthorController {
     }
 
     @PutMapping("{id}")
-    public ResponseBaseDto updateAuthor(@PathVariable(value = "id") Long authorId, @RequestBody RequestUpdateAuthorDto authorData) {
+    public ResponseBaseDto updateAuthor(@PathVariable(value = "id") Long authorId, @RequestBody AuthorRequestUpdateDto authorData) {
 
         try {
 
-            ResponseUpdateAuthorDto author = authorService.update(authorId, authorData);
+            AuthorResponseUpdateDto author = authorService.update(authorId, authorData);
 
             return ResponseBaseDto.saved(author);
             
@@ -121,11 +121,11 @@ public class AuthorController {
     }
 
     @PutMapping("{id}/password")
-    public ResponseBaseDto updatePassword(@PathVariable(value = "id") Long authorId, @RequestBody RequestAuthorPassDto authorPassDto) {
+    public ResponseBaseDto updatePassword(@PathVariable(value = "id") Long authorId, @RequestBody AuthorRequestPassDto authorPassDto) {
 
         try {
 
-            ResponseUpdatePasswordDto author = authorService.changePassword(authorId, authorPassDto);
+            PasswordResponseUpdateDto author = authorService.changePassword(authorId, authorPassDto);
 
             return ResponseBaseDto.saved(author);
             

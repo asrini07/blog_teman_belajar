@@ -6,8 +6,8 @@ import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.request.RequestCommentDto;
-import com.example.temanbelajar.dto.response.ResponseCommentDto;
+import com.example.temanbelajar.dto.request.CommentRequestDto;
+import com.example.temanbelajar.dto.response.CommentResponseDto;
 import com.example.temanbelajar.model.Comment;
 import com.example.temanbelajar.repository.BlogRepository;
 import com.example.temanbelajar.service.CommentService;
@@ -38,11 +38,11 @@ public class CommentController {
     BlogRepository blogRepository;
 
     @GetMapping("/{blogId}/comments")
-    public ResponseBaseDto<ConfigPage<ResponseCommentDto>> getComment(@PathVariable Long blogId, ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<ConfigPage<CommentResponseDto>> getComment(@PathVariable Long blogId, ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
         try {
 
-            Page<ResponseCommentDto> comment;
+            Page<CommentResponseDto> comment;
 
             if (param != null) {
                 comment = commentService.findByNameParams(blogId, ConfigPageable.convertToPageable(pageable), param);
@@ -50,7 +50,7 @@ public class CommentController {
                 comment = commentService.findAll(blogId, ConfigPageable.convertToPageable(pageable));
             }
 
-            PageConverter<ResponseCommentDto> converter = new PageConverter<>();
+            PageConverter<CommentResponseDto> converter = new PageConverter<>();
             String url = String.format("%s://%s:%d/posts/"+blogId+"/comments",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
@@ -59,7 +59,7 @@ public class CommentController {
                 search += "&param="+param;
             }
 
-            ConfigPage<ResponseCommentDto> respon = converter.convert(comment, url, search);
+            ConfigPage<CommentResponseDto> respon = converter.convert(comment, url, search);
 
             return ResponseBaseDto.ok(respon);
 
@@ -72,7 +72,7 @@ public class CommentController {
     }
 
     @PostMapping("/{blogId}/comments")
-    public ResponseBaseDto createBlogComment(@PathVariable Long blogId, @RequestBody RequestCommentDto commentData) {
+    public ResponseBaseDto createBlogComment(@PathVariable Long blogId, @RequestBody CommentRequestDto commentData) {
 
         try {
 
@@ -89,7 +89,7 @@ public class CommentController {
     }
 
     @GetMapping("/{blogId}/comments/{id}")
-    public ResponseBaseDto<ResponseCommentDto> getCommentById(@PathVariable Long blogId, @PathVariable Long id){
+    public ResponseBaseDto<CommentResponseDto> getCommentById(@PathVariable Long blogId, @PathVariable Long id){
 
         try {
 
@@ -104,7 +104,7 @@ public class CommentController {
     }
 
     @PutMapping("/{blogId}/comments/{commentId}")
-    public ResponseBaseDto updateBlogComment(@PathVariable Long blogId, @PathVariable Long commentId, @RequestBody RequestCommentDto commentData) {
+    public ResponseBaseDto updateBlogComment(@PathVariable Long blogId, @PathVariable Long commentId, @RequestBody CommentRequestDto commentData) {
 
         try {
 

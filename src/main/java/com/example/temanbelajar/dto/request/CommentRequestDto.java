@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestCommentDto {
+public class CommentRequestDto {
 
     @Column(length = 80)
     @Size(min = 10, max = 80)

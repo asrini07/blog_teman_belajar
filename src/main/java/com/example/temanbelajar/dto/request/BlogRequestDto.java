@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestBlogDto {
+public class BlogRequestDto {
 
     @Column(length = 150, nullable = false)
     @Size(min = 3, max = 150, message = "Lastname min 3 and max 150 character")
