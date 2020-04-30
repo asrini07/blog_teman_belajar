@@ -210,6 +210,11 @@ public class AuthorServiceImpl implements AuthorService {
 
     }
 
+    @Override
+	public Author findByUsername(String username) {
+		return authorRepository.findByUsername(username);
+	}
+
     
 
 

@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.example.temanbelajar.service.UserAuthService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,23 +29,21 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 /**
- * AuthorizationServerConfig
+ * Rest API Authorization Config
  */
 @Configuration
 @EnableAuthorizationServer
 @EnableGlobalMethodSecurity(prePostEnabled =  true)
-@Import(WebSecurityConfig.class)
-public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+@Import(ServerSecurityConfig.class)
+public class RestConfiguration extends AuthorizationServerConfigurerAdapter { 
 
     private static final String RESOURCE_ID = "resource-server-rest-api";
     private static final String RESOURCE_MOBILE = "mobile-resource-id";
 
 	@Autowired
-    private DataSource dataSource;
-
-    // @Autowired
-    // private UserAuthService userDetailsService;
-    @Autowired
+	private DataSource dataSource;
+	
+	@Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -55,55 +51,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Autowired
     private PasswordEncoder oauthClientPasswordEncoder;
-    
-    // @Autowired
-    // private AuthenticationManager authenticationManager;
 
-    // @Autowired
-    // private PasswordEncoder passwordEncoder;
-
-    /**
-     * Setting up the endpointsconfigurer authentication manager.
-     * The AuthorizationServerEndpointsConfigurer defines the authorization and token endpoints and the token services.
-     * @param endpoints
-     * @throws Exception
-     */
-    // @Override
-    // public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-    //     endpoints
-    //             .authenticationManager(authenticationManager);
-    // }
-
-    /**
-     * Setting up the clients with a clientId, a clientSecret, a scope, the grant types and the authorities.
-     * @param clients
-     * @throws Exception
-     */
-    // @Override
-    // public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-    //     clients
-    //             .inMemory()
-    //             .withClient("my-trusted-client")
-    //             .authorizedGrantTypes("client_credentials", "password")
-    //             // .authorities("ROLE_CLIENT","ROLE_TRUSTED_CLIENT")
-    //             .scopes("read","write","trust")
-    //             .resourceIds("oauth2-resource")
-    //             .accessTokenValiditySeconds(5000)
-    //             .secret(passwordEncoder.encode("secret"));
-    // }
-
-    /**
-     * We here defines the security constraints on the token endpoint.
-     * We set it up to isAuthenticated, which returns true if the user is not anonymous
-     * @param security the AuthorizationServerSecurityConfigurer.
-     * @throws Exception
-     */
-    // @Override
-    // public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-    //     security
-    //             .checkTokenAccess("isAuthenticated()");
-    // }
-    @Bean
+	@Bean
     public TokenStore tokenStore() {
         return new JdbcTokenStore(dataSource);
     }
@@ -205,7 +154,43 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
             .antMatchers("/api/oauth/check_token").permitAll()
         .and()
             .authorizeRequests()
-            .antMatchers("/api/login").permitAll()
+            .antMatchers("/author/api/login").permitAll()
+        .and()
+            .authorizeRequests()
+            .antMatchers("/api/user/ready").permitAll()
+        .and()
+            .authorizeRequests()
+            .antMatchers("/api/user/create/password").permitAll()
+        .and()
+            .authorizeRequests()
+            .antMatchers("/api/user/otp/validation").permitAll()
+        .and()	
+            .authorizeRequests()
+            .antMatchers("/oauth/token").permitAll()
+        .and()	
+            .authorizeRequests()
+            .antMatchers("/api/oauth/token").permitAll()
+        .and()	
+            .authorizeRequests()
+            .antMatchers("/api/api-docs.yml").permitAll()
+        .and()	
+            .authorizeRequests()
+            .antMatchers("/api/api-docs").permitAll()
+        .and()	
+            .authorizeRequests()
+            .antMatchers("/api/api-docs/*").permitAll()
+        .and()	
+            .authorizeRequests()
+            .antMatchers("/api/docs.html").permitAll()
+        .and()
+            .authorizeRequests()
+            .antMatchers("/api/swagger-ui/*").permitAll()
+        .and()
+            .authorizeRequests()
+            .antMatchers("/api/user/create/password/link").permitAll()
+        .and()
+            .authorizeRequests()
+            .antMatchers("/api/v2/user/create/password").permitAll()
             
         .and()
         .authorizeRequests()
@@ -214,15 +199,25 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         .and()
         .authorizeRequests()
         .antMatchers("/api/mobile/login-mobile").permitAll()   
-
-        .and()
-        .authorizeRequests()
-        .antMatchers("/posts/**").permitAll()
         
         .and()
         .authorizeRequests()
-        .antMatchers("/blog/**").permitAll()
+        .antMatchers(
+                "/api/mobile/forgot-password/**",
+                "/api/mobile/validate-pin/**").permitAll()
+                
+        .and()
+        .authorizeRequests()
+        .antMatchers("/api/mobile/register-user-mobile").permitAll() 
         
+        
+        .and()
+        .authorizeRequests()
+        .antMatchers("/api/mobile/register-req-verification").permitAll() 
+        
+        .and()
+        .authorizeRequests()
+        .antMatchers("/api/mobile/register-verification-valid").permitAll()   
             
         .and()
         .authorizeRequests()
@@ -231,4 +226,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         .access("isAuthenticated()")
         .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
     }
+	
 }

@@ -110,7 +110,7 @@ public class BlogController {
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(200, e.getMessage());
+            return ResponseBaseDto.error("200", e.getMessage());
         
         }
     }
@@ -127,7 +127,7 @@ public class BlogController {
             
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 
@@ -181,7 +181,7 @@ public class BlogController {
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 
@@ -198,7 +198,7 @@ public class BlogController {
             
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 
@@ -215,7 +215,7 @@ public class BlogController {
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 

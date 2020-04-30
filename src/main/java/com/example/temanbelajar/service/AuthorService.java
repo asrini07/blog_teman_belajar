@@ -29,5 +29,9 @@ public interface AuthorService {
     PasswordResponseUpdateDto changePassword(Long authorId, AuthorRequestPassDto authorData);
 
     void deleteById(Long authorId);
+
+    public Author findByUsername(String username);
+
+   // BCryptPasswordEncoder passwordEncoder();
     
 }

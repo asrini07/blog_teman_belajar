@@ -19,34 +19,34 @@ import lombok.NoArgsConstructor;
 public class ResponseBaseDto<Any> {
     
     private boolean status;
-    private Integer code;
+    private String code;
     private String message;
     private Any data;
 
-    public static ResponseBaseDto error(Integer code, String message) {
+    public static ResponseBaseDto error(String code, String message) {
         return new ResponseBaseDto<>(false, code, message, null);
     }
 
     public static ResponseBaseDto ok() {
-        return new ResponseBaseDto<>(true, 200, "Success", null);
+        return new ResponseBaseDto<>(true, "200", "Success", null);
     }
 
     public static <I> ResponseBaseDto<I> ok(I body) {
-        return new ResponseBaseDto<I>(true, 200, "Success", body);
+        return new ResponseBaseDto<I>(true, "200", "Success", body);
     }
 
     public static ResponseBaseDto created() {
-        return new ResponseBaseDto<>(true, 201, "Created", null);
+        return new ResponseBaseDto<>(true, "201", "Created", null);
     }
 
     public static <I>ResponseBaseDto<I> saved(I body) {
-        return new ResponseBaseDto<I>(true, 201, "Created", body);
+        return new ResponseBaseDto<I>(true, "201", "Created", body);
     }
 
     public static ResponseBaseDto created(String uri) {
         ResponseBaseDto<Map> baseResponse = new ResponseBaseDto<>();
         baseResponse.setStatus(true);
-        baseResponse.setCode(201);
+        baseResponse.setCode("201");
         baseResponse.setMessage("Created");
         Map<String, String> map = new LinkedHashMap<>();
         map.put("uri", uri);
