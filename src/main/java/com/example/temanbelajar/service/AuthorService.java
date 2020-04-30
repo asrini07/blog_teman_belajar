@@ -1,11 +1,11 @@
 package com.example.temanbelajar.service;
 
-import com.example.temanbelajar.dto.request.RequestAuthorDto;
-import com.example.temanbelajar.dto.request.RequestAuthorPassDto;
-import com.example.temanbelajar.dto.request.RequestUpdateAuthorDto;
-import com.example.temanbelajar.dto.response.ResponseAuthorDto;
-import com.example.temanbelajar.dto.response.ResponseUpdateAuthorDto;
-import com.example.temanbelajar.dto.response.ResponseUpdatePasswordDto;
+import com.example.temanbelajar.dto.request.AuthorRequestDto;
+import com.example.temanbelajar.dto.request.AuthorRequestPassDto;
+import com.example.temanbelajar.dto.request.AuthorRequestUpdateDto;
+import com.example.temanbelajar.dto.response.AuthorResponseDto;
+import com.example.temanbelajar.dto.response.AuthorResponseUpdateDto;
+import com.example.temanbelajar.dto.response.PasswordResponseUpdateDto;
 import com.example.temanbelajar.model.Author;
 
 import org.springframework.data.domain.Page;
@@ -16,18 +16,22 @@ import org.springframework.data.domain.Pageable;
  */
 public interface AuthorService {
 
-    Page<ResponseAuthorDto> findAll(Pageable pageable);
+    Page<AuthorResponseDto> findAll(Pageable pageable);
 
-    ResponseAuthorDto findById(Long authorId);
+    AuthorResponseDto findById(Long authorId);
 
-    Page<ResponseAuthorDto> findByNameParams(Pageable pageable, String param);
+    Page<AuthorResponseDto> findByNameParams(Pageable pageable, String param);
 
-    Author save(RequestAuthorDto request);
+    Author save(AuthorRequestDto request);
 
-    ResponseUpdateAuthorDto update(Long authorId, RequestUpdateAuthorDto authorData);
+    AuthorResponseUpdateDto update(Long authorId, AuthorRequestUpdateDto authorData);
 
-    ResponseUpdatePasswordDto changePassword(Long authorId, RequestAuthorPassDto authorData);
+    PasswordResponseUpdateDto changePassword(Long authorId, AuthorRequestPassDto authorData);
 
     void deleteById(Long authorId);
+
+    public Author findByUsername(String username);
+
+   // BCryptPasswordEncoder passwordEncoder();
     
 }

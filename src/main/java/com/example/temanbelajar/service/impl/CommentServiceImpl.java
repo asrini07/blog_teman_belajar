@@ -1,8 +1,8 @@
 package com.example.temanbelajar.service.impl;
 
 import com.example.temanbelajar.config.DateTime;
-import com.example.temanbelajar.dto.request.RequestCommentDto;
-import com.example.temanbelajar.dto.response.ResponseCommentDto;
+import com.example.temanbelajar.dto.request.CommentRequestDto;
+import com.example.temanbelajar.dto.response.CommentResponseDto;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Blog;
 import com.example.temanbelajar.model.Comment;
@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     private static final String FIELD = "id";
 
     @Override
-    public Page<ResponseCommentDto> findAll(Long blogId, Pageable pageable) {
+    public Page<CommentResponseDto> findAll(Long blogId, Pageable pageable) {
 
         try {
 
@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseCommentDto findByIdAndBlogId(Long commentId, Long blogId) {
+    public CommentResponseDto findByIdAndBlogId(Long commentId, Long blogId) {
 
         try {
 
@@ -77,7 +77,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Page<ResponseCommentDto> findByNameParams(Long blogId, Pageable pageable, String param) {
+    public Page<CommentResponseDto> findByNameParams(Long blogId, Pageable pageable, String param) {
 
         try {
 
@@ -110,7 +110,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment save(Long blogId, RequestCommentDto request) {
+    public Comment save(Long blogId, CommentRequestDto request) {
 
         try {
             
@@ -135,7 +135,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment update(Long commentId, Long blogId,  RequestCommentDto request) {
+    public Comment update(Long commentId, Long blogId,  CommentRequestDto request) {
 
         try {
             Blog blog = blogRepository.findById(blogId).orElseThrow(()->new ResourceNotFoundException("Blog", "id", blogId.toString()));
@@ -161,9 +161,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
-    private ResponseCommentDto fromEntity(Comment comment) {
+    private CommentResponseDto fromEntity(Comment comment) {
 
-        ResponseCommentDto response = new ResponseCommentDto();
+        CommentResponseDto response = new CommentResponseDto();
         BeanUtils.copyProperties(comment, response);
         return response;
         

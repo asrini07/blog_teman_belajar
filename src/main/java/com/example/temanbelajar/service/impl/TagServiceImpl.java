@@ -1,8 +1,8 @@
 package com.example.temanbelajar.service.impl;
 
 import com.example.temanbelajar.config.DateTime;
-import com.example.temanbelajar.dto.request.RequestTagDto;
-import com.example.temanbelajar.dto.response.ResponseTagDto;
+import com.example.temanbelajar.dto.request.TagRequestDto;
+import com.example.temanbelajar.dto.response.TagResponseDto;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Tags;
 import com.example.temanbelajar.repository.TagRepository;
@@ -32,7 +32,7 @@ public class TagServiceImpl implements TagService {
     private static final String FIELD = "id";
 
     @Override
-    public Page<ResponseTagDto> findAll(Pageable pageable) {
+    public Page<TagResponseDto> findAll(Pageable pageable) {
 
         try {
 
@@ -48,7 +48,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public ResponseTagDto findById(Long id) {
+    public TagResponseDto findById(Long id) {
 
         try {
 
@@ -70,7 +70,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Page<ResponseTagDto> search(Pageable pageable, String param) {
+    public Page<TagResponseDto> search(Pageable pageable, String param) {
 
         try {
 
@@ -115,7 +115,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tags save(RequestTagDto request) {
+    public Tags save(TagRequestDto request) {
 
         try {
 
@@ -133,7 +133,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tags update(Long id, RequestTagDto request) {
+    public Tags update(Long id, TagRequestDto request) {
 
         try {
 
@@ -157,9 +157,9 @@ public class TagServiceImpl implements TagService {
         }
     }
 
-    private ResponseTagDto fromEntity(Tags tags) {
+    private TagResponseDto fromEntity(Tags tags) {
 
-        ResponseTagDto response = new ResponseTagDto();
+        TagResponseDto response = new TagResponseDto();
         BeanUtils.copyProperties(tags, response);
         return response;
         

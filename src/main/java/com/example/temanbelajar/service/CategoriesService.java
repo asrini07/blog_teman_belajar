@@ -1,9 +1,8 @@
 package com.example.temanbelajar.service;
 
+import com.example.temanbelajar.dto.request.CategoriesRequestDto;
+import com.example.temanbelajar.dto.response.CategoriesResponseDto;
 import com.example.temanbelajar.model.Categories;
-import com.example.temanbelajar.dto.request.RequestCategoriesDto;
-import com.example.temanbelajar.dto.response.ResponseCategoriesDto;
-
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,15 +11,15 @@ import org.springframework.data.domain.Pageable;
  */
 public interface CategoriesService {
 
-    Page<ResponseCategoriesDto> findAll(Pageable pageable);
+    Page<CategoriesResponseDto> findAll(Pageable pageable);
 
-    ResponseCategoriesDto findById(Long categoryId);
+    CategoriesResponseDto findById(Long categoryId);
 
-    Page<ResponseCategoriesDto> findByNameParams(Pageable pageable, String param);
+    Page<CategoriesResponseDto> findByNameParams(Pageable pageable, String param);
 
-    Categories save(RequestCategoriesDto request);
+    Categories save(CategoriesRequestDto request);
 
-    Categories update(Long categoryId, RequestCategoriesDto categoryData);
+    Categories update(Long categoryId, CategoriesRequestDto categoryData);
 
     void deleteById(Long categoryId);
 

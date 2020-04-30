@@ -8,10 +8,9 @@ import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.request.RequestBlogDto;
-import com.example.temanbelajar.dto.request.RequestUpdateBlogDto;
-import com.example.temanbelajar.dto.response.ResponseBlogDto;
-import com.example.temanbelajar.dto.response.ResponseUploadDto;
+import com.example.temanbelajar.dto.request.BlogRequestDto;
+import com.example.temanbelajar.dto.request.BlogRequestUpdateDto;
+import com.example.temanbelajar.dto.response.BlogResponseDto;
 import com.example.temanbelajar.dto.response.UploadFileResponse;
 import com.example.temanbelajar.model.Blog;
 import com.example.temanbelajar.repository.AuthorRepository;
@@ -69,13 +68,13 @@ public class BlogController {
     private FileStorageService fileStorageService;
 
     @GetMapping()
-    public ResponseBaseDto<ConfigPage<ResponseBlogDto>> getAllBlog(ConfigPageable pageable, @RequestParam(required = false) String param,
+    public ResponseBaseDto<ConfigPage<BlogResponseDto>> getAllBlog(ConfigPageable pageable, @RequestParam(required = false) String param,
      @RequestParam(required = false) Long categories_id, @RequestParam(required = false) Long author_id, 
      @RequestParam(required = false) String tag_name,  HttpServletRequest request){
 
         try {
 
-            Page<ResponseBlogDto> blogs;
+            Page<BlogResponseDto> blogs;
 
             if (param != null) {
                 blogs = blogService.findByNameParams(ConfigPageable.convertToPageable(pageable), param);
@@ -89,7 +88,7 @@ public class BlogController {
                 blogs = blogService.findAll(ConfigPageable.convertToPageable(pageable));
             }
 
-            PageConverter<ResponseBlogDto> converter = new PageConverter<>();
+            PageConverter<BlogResponseDto> converter = new PageConverter<>();
             String url = String.format("%s://%s:%d/blog",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
@@ -104,21 +103,21 @@ public class BlogController {
                 search += "&tag_name="+tag_name;
             }
 
-            ConfigPage<ResponseBlogDto> respon = converter.convert(blogs, url, search);
+            ConfigPage<BlogResponseDto> respon = converter.convert(blogs, url, search);
 
             return ResponseBaseDto.ok(respon);
 
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(200, e.getMessage());
+            return ResponseBaseDto.error("200", e.getMessage());
         
         }
     }
 
 
     @PostMapping()
-    public ResponseBaseDto createBlog(@RequestBody RequestBlogDto blogData) {
+    public ResponseBaseDto createBlog(@RequestBody BlogRequestDto blogData) {
 
         try {
 
@@ -128,7 +127,7 @@ public class BlogController {
             
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 
@@ -174,7 +173,7 @@ public class BlogController {
     // }
 
     @GetMapping("/{id}")
-    public ResponseBaseDto<ResponseBlogDto> detailBlog(@PathVariable(value = "id") Long blogId) {
+    public ResponseBaseDto<BlogResponseDto> detailBlog(@PathVariable(value = "id") Long blogId) {
 
         try {
 
@@ -182,14 +181,14 @@ public class BlogController {
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 
     }
 
     @PutMapping("{id}")
-    public ResponseBaseDto updateBlog(@PathVariable(value = "id") Long blogId, @RequestBody RequestUpdateBlogDto blogData) {
+    public ResponseBaseDto updateBlog(@PathVariable(value = "id") Long blogId, @RequestBody BlogRequestUpdateDto blogData) {
 
         try {
 
@@ -199,7 +198,7 @@ public class BlogController {
             
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 
@@ -216,7 +215,7 @@ public class BlogController {
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 

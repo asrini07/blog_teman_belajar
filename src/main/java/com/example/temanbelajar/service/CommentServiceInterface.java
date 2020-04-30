@@ -1,12 +1,12 @@
 package com.example.temanbelajar.service;
 
-import com.example.temanbelajar.dto.response.ReponseCommentDto;
+import com.example.temanbelajar.dto.response.CommentReponseDto;
 
 /**
  * CommentServiceInterface
  */
 public interface CommentServiceInterface {
 
-    ReponseCommentDto findById(Long id);
+    CommentReponseDto findById(Long id);
 
 }

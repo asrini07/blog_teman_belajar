@@ -1,8 +1,8 @@
 package com.example.temanbelajar.service;
 
+import com.example.temanbelajar.dto.request.TagRequestDto;
+import com.example.temanbelajar.dto.response.TagResponseDto;
 import com.example.temanbelajar.model.Tags;
-import com.example.temanbelajar.dto.request.RequestTagDto;
-import com.example.temanbelajar.dto.response.ResponseTagDto;
 
 
 import org.springframework.data.domain.Page;
@@ -13,15 +13,15 @@ import org.springframework.data.domain.Pageable;
  */
 public interface TagService {
 
-    Page<ResponseTagDto> findAll(Pageable pageable);
+    Page<TagResponseDto> findAll(Pageable pageable);
 
-    ResponseTagDto findById(Long tagId);
+    TagResponseDto findById(Long tagId);
 
-    Page<ResponseTagDto> search(Pageable pageable, String param);
+    Page<TagResponseDto> search(Pageable pageable, String param);
 
-    Tags save(RequestTagDto request);
+    Tags save(TagRequestDto request);
 
-    Tags update(Long tagId, RequestTagDto tagData);
+    Tags update(Long tagId, TagRequestDto tagData);
 
     void deleteById(Long tagId);
 

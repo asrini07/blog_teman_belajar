@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.example.temanbelajar.config.DateTime;
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.request.RequestBlogDto;
-import com.example.temanbelajar.dto.request.RequestUpdateBlogDto;
-import com.example.temanbelajar.dto.response.ResponseBlogDto;
-import com.example.temanbelajar.dto.response.ResponseUploadDto;
+import com.example.temanbelajar.dto.request.BlogRequestDto;
+import com.example.temanbelajar.dto.request.BlogRequestUpdateDto;
+import com.example.temanbelajar.dto.response.BlogResponseDto;
+import com.example.temanbelajar.dto.response.UploadResponseDto;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Author;
 import com.example.temanbelajar.model.Blog;
@@ -68,7 +68,7 @@ public class BlogServiceImpl implements BlogService {
     private FileStorageService fileStorageService;
 
     @Override
-    public Page<ResponseBlogDto> findAll(Pageable pageable) {
+    public Page<BlogResponseDto> findAll(Pageable pageable) {
 
         try {
 
@@ -84,7 +84,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public ResponseBlogDto findById(Long id) {
+    public BlogResponseDto findById(Long id) {
 
         try {
 
@@ -107,7 +107,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Page<ResponseBlogDto> findByNameParams(Pageable pageable, String param) {
+    public Page<BlogResponseDto> findByNameParams(Pageable pageable, String param) {
 
         try {
 
@@ -141,7 +141,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Blog save(RequestBlogDto blogData) {
+    public Blog save(BlogRequestDto blogData) {
 
         try {
 
@@ -191,7 +191,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Blog update(Long id, RequestUpdateBlogDto request) {
+    public Blog update(Long id, BlogRequestUpdateDto request) {
 
         try {
 
@@ -216,24 +216,24 @@ public class BlogServiceImpl implements BlogService {
         }
     }
 
-    private ResponseBlogDto fromEntity(Blog blog) {
+    private BlogResponseDto fromEntity(Blog blog) {
 
-        ResponseBlogDto response = new ResponseBlogDto();
+        BlogResponseDto response = new BlogResponseDto();
         BeanUtils.copyProperties(blog, response);
         return response;
 
     }
 
-    private ResponseUploadDto fromEntityUpload(Blog blog) {
+    private UploadResponseDto fromEntityUpload(Blog blog) {
 
-        ResponseUploadDto response = new ResponseUploadDto();
+        UploadResponseDto response = new UploadResponseDto();
         BeanUtils.copyProperties(blog, response);
         return response;
 
     }
 
     @Override
-    public Page<ResponseBlogDto> findByAuthor(Pageable pageable, Long author_id) {
+    public Page<BlogResponseDto> findByAuthor(Pageable pageable, Long author_id) {
 
         try {
             return blogRepository.findByAuthor(pageable, author_id).map(this::fromEntity);
@@ -245,7 +245,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Page<ResponseBlogDto> findByCategory(Pageable pageable, Long categories_id) {
+    public Page<BlogResponseDto> findByCategory(Pageable pageable, Long categories_id) {
 
         try {
             return blogRepository.findByCategory(pageable, categories_id).map(this::fromEntity);
@@ -257,7 +257,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Page<ResponseBlogDto> findByTag(Pageable pageable, String tag_name) {
+    public Page<BlogResponseDto> findByTag(Pageable pageable, String tag_name) {
 
         try {
             return blogRepository.findByTag(pageable, tag_name).map(this::fromEntity);

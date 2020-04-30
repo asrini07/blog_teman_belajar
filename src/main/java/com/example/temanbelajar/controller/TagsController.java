@@ -6,8 +6,8 @@ import com.example.temanbelajar.config.pagination.ConfigPage;
 import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.request.RequestTagDto;
-import com.example.temanbelajar.dto.response.ResponseTagDto;
+import com.example.temanbelajar.dto.request.TagRequestDto;
+import com.example.temanbelajar.dto.response.TagResponseDto;
 import com.example.temanbelajar.model.Tags;
 import com.example.temanbelajar.service.TagService;
 
@@ -35,11 +35,11 @@ public class TagsController {
 
     //with pagination
     @GetMapping()
-    public ResponseBaseDto<ConfigPage<ResponseTagDto>> getAllTag(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<ConfigPage<TagResponseDto>> getAllTag(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
 
         try {
 
-            Page<ResponseTagDto> tags;
+            Page<TagResponseDto> tags;
 
             if (param != null) {
                 tags = tagService.search(ConfigPageable.convertToPageable(pageable), param);
@@ -47,7 +47,7 @@ public class TagsController {
                 tags = tagService.findAll(ConfigPageable.convertToPageable(pageable));
             }
 
-            PageConverter<ResponseTagDto> converter = new PageConverter<>();
+            PageConverter<TagResponseDto> converter = new PageConverter<>();
             String url = String.format("%s://%s:%d/tags",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
@@ -56,19 +56,19 @@ public class TagsController {
                 search += "&param="+param;
             }
 
-            ConfigPage<ResponseTagDto> response = converter.convert(tags, url, search);
+            ConfigPage<TagResponseDto> response = converter.convert(tags, url, search);
 
             return ResponseBaseDto.ok(response);
             
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(200, e.getMessage());
+            return ResponseBaseDto.error("200", e.getMessage());
             
         }
     }
 
     @PostMapping()
-    public ResponseBaseDto createTag(@RequestBody RequestTagDto request){
+    public ResponseBaseDto createTag(@RequestBody TagRequestDto request){
 
         try {
 
@@ -78,14 +78,14 @@ public class TagsController {
             
         } catch (Exception e) {
             
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 
     }
 
     @GetMapping("/{id}")
-    public ResponseBaseDto<ResponseTagDto> detailTags(@PathVariable(value = "id") Long tagId) {
+    public ResponseBaseDto<TagResponseDto> detailTags(@PathVariable(value = "id") Long tagId) {
 
         try {
 
@@ -93,7 +93,7 @@ public class TagsController {
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
     }
@@ -123,7 +123,7 @@ public class TagsController {
     // }
 
     @PutMapping("{id}")
-    public ResponseBaseDto updateCategory(@PathVariable(value = "id") Long tagId, @RequestBody RequestTagDto tagData) {
+    public ResponseBaseDto updateCategory(@PathVariable(value = "id") Long tagId, @RequestBody TagRequestDto tagData) {
 
         try {
 
@@ -133,7 +133,7 @@ public class TagsController {
             
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
     }
@@ -149,7 +149,7 @@ public class TagsController {
             
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
             
         }
     }

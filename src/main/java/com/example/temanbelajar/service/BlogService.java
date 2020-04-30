@@ -3,10 +3,9 @@ package com.example.temanbelajar.service;
 import javax.servlet.http.HttpServletRequest;
 
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.request.RequestBlogDto;
-import com.example.temanbelajar.dto.request.RequestUpdateBlogDto;
-import com.example.temanbelajar.dto.response.ResponseBlogDto;
-import com.example.temanbelajar.dto.response.ResponseUploadDto;
+import com.example.temanbelajar.dto.request.BlogRequestDto;
+import com.example.temanbelajar.dto.request.BlogRequestUpdateDto;
+import com.example.temanbelajar.dto.response.BlogResponseDto;
 import com.example.temanbelajar.model.Blog;
 
 import org.springframework.core.io.Resource;
@@ -20,21 +19,21 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface BlogService {
 
-    Page<ResponseBlogDto> findAll(Pageable pageable);
+    Page<BlogResponseDto> findAll(Pageable pageable);
 
-    ResponseBlogDto findById(Long blogId);
+    BlogResponseDto findById(Long blogId);
 
-    Page<ResponseBlogDto> findByNameParams(Pageable pageable, String param);
+    Page<BlogResponseDto> findByNameParams(Pageable pageable, String param);
 
-    Page<ResponseBlogDto> findByAuthor(Pageable pageable, Long author_id);
+    Page<BlogResponseDto> findByAuthor(Pageable pageable, Long author_id);
     
-    Page<ResponseBlogDto> findByCategory(Pageable pageable, Long categories_id);
+    Page<BlogResponseDto> findByCategory(Pageable pageable, Long categories_id);
 
-    Page<ResponseBlogDto> findByTag(Pageable pageable, String tag_name);
+    Page<BlogResponseDto> findByTag(Pageable pageable, String tag_name);
 
-    Blog save(RequestBlogDto request);
+    Blog save(BlogRequestDto request);
 
-    Blog update(Long blogId, RequestUpdateBlogDto blogData);
+    Blog update(Long blogId, BlogRequestUpdateDto blogData);
 
     void deleteById(Long blogId);
 

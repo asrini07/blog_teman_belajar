@@ -7,8 +7,8 @@ import com.example.temanbelajar.config.pagination.ConfigPageable;
 import com.example.temanbelajar.config.pagination.PageConverter;
 
 import com.example.temanbelajar.dto.ResponseBaseDto;
-import com.example.temanbelajar.dto.request.RequestCategoriesDto;
-import com.example.temanbelajar.dto.response.ResponseCategoriesDto;
+import com.example.temanbelajar.dto.request.CategoriesRequestDto;
+import com.example.temanbelajar.dto.response.CategoriesResponseDto;
 import com.example.temanbelajar.model.Categories;
 import com.example.temanbelajar.service.CategoriesService;
 
@@ -35,11 +35,11 @@ public class CategoriesController {
     private CategoriesService categoriesService;
 
     @GetMapping()
-    public ResponseBaseDto<ConfigPage<ResponseCategoriesDto>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
+    public ResponseBaseDto<ConfigPage<CategoriesResponseDto>> getAllCategories(ConfigPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request){
         
         try {
 
-            Page<ResponseCategoriesDto> categories;
+            Page<CategoriesResponseDto> categories;
 
             if (param != null) {
                 categories = categoriesService.findByNameParams(ConfigPageable.convertToPageable(pageable), param);
@@ -47,7 +47,7 @@ public class CategoriesController {
                 categories = categoriesService.findAll(ConfigPageable.convertToPageable(pageable));
             }
 
-            PageConverter<ResponseCategoriesDto> converter = new PageConverter<>();
+            PageConverter<CategoriesResponseDto> converter = new PageConverter<>();
             String url = String.format("%s://%s:%d/category",request.getScheme(),  request.getServerName(), request.getServerPort());
 
             String search = "";
@@ -56,20 +56,20 @@ public class CategoriesController {
                 search += "&param="+param;
             }
 
-            ConfigPage<ResponseCategoriesDto> respon = converter.convert(categories, url, search);
+            ConfigPage<CategoriesResponseDto> respon = converter.convert(categories, url, search);
 
             return ResponseBaseDto.ok(respon);
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(200, e.getMessage());
+            return ResponseBaseDto.error("200", e.getMessage());
 
         }
 
     }
 
     @GetMapping("/{id}")
-    public ResponseBaseDto<ResponseCategoriesDto> detailCategory(@PathVariable(value = "id") Long categoryId) {
+    public ResponseBaseDto<CategoriesResponseDto> detailCategory(@PathVariable(value = "id") Long categoryId) {
 
         try {
 
@@ -77,7 +77,7 @@ public class CategoriesController {
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 
@@ -85,7 +85,7 @@ public class CategoriesController {
 
 
     @PostMapping()
-    public ResponseBaseDto createCategory(@RequestBody RequestCategoriesDto categoriesData) {
+    public ResponseBaseDto createCategory(@RequestBody CategoriesRequestDto categoriesData) {
        
         try {
 
@@ -95,14 +95,14 @@ public class CategoriesController {
             
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
 
     }
 
     @PutMapping("{id}")
-    public ResponseBaseDto updateCategory(@PathVariable(value = "id") Long categoryId, @RequestBody RequestCategoriesDto categoriesData) {
+    public ResponseBaseDto updateCategory(@PathVariable(value = "id") Long categoryId, @RequestBody CategoriesRequestDto categoriesData) {
                 
             try {
 
@@ -112,7 +112,7 @@ public class CategoriesController {
                 
             } catch (Exception e) {
 
-                return ResponseBaseDto.error(400, e.getMessage());
+                return ResponseBaseDto.error("400", e.getMessage());
 
             }
     }
@@ -153,7 +153,7 @@ public class CategoriesController {
 
         } catch (Exception e) {
 
-            return ResponseBaseDto.error(400, e.getMessage());
+            return ResponseBaseDto.error("400", e.getMessage());
 
         }
     }

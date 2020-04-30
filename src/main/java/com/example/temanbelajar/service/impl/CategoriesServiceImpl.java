@@ -1,8 +1,8 @@
 package com.example.temanbelajar.service.impl;
 
 import com.example.temanbelajar.config.DateTime;
-import com.example.temanbelajar.dto.request.RequestCategoriesDto;
-import com.example.temanbelajar.dto.response.ResponseCategoriesDto;
+import com.example.temanbelajar.dto.request.CategoriesRequestDto;
+import com.example.temanbelajar.dto.response.CategoriesResponseDto;
 import com.example.temanbelajar.exeption.ResourceNotFoundException;
 import com.example.temanbelajar.model.Categories;
 import com.example.temanbelajar.repository.CategoriesRepository;
@@ -32,7 +32,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     private static final String FIELD = "id";
 
     @Override
-    public Page<ResponseCategoriesDto> findAll(Pageable pageable) {
+    public Page<CategoriesResponseDto> findAll(Pageable pageable) {
 
         try {
 
@@ -48,7 +48,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
-    public ResponseCategoriesDto findById(Long id) {
+    public CategoriesResponseDto findById(Long id) {
 
         try {
 
@@ -70,7 +70,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
-    public Page<ResponseCategoriesDto> findByNameParams(Pageable pageable, String param) {
+    public Page<CategoriesResponseDto> findByNameParams(Pageable pageable, String param) {
 
         try {
 
@@ -103,7 +103,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
-    public Categories save(RequestCategoriesDto request) {
+    public Categories save(CategoriesRequestDto request) {
 
         try {
 
@@ -121,7 +121,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
-    public Categories update(Long id, RequestCategoriesDto request) {
+    public Categories update(Long id, CategoriesRequestDto request) {
 
         try {
 
@@ -145,9 +145,9 @@ public class CategoriesServiceImpl implements CategoriesService {
         }
     }
 
-    private ResponseCategoriesDto fromEntity(Categories categories) {
+    private CategoriesResponseDto fromEntity(Categories categories) {
 
-        ResponseCategoriesDto response = new ResponseCategoriesDto();
+        CategoriesResponseDto response = new CategoriesResponseDto();
         BeanUtils.copyProperties(categories, response);
         return response;
         

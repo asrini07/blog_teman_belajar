@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RequestAuthorDto {
+public class AuthorRequestDto {
 
     @Column(length = 45, nullable = false)
     @Size(min = 3, max = 45)
