@@ -14,6 +14,9 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     Author findByUsername(String username);
 
+    @Query("select e from #{#entityName} e where e.id = :id ")
+    Author findByUserId(Long id);
+
     @Query("select e from #{#entityName} e where e.first_name like %:param% OR "
     + "e.last_name like %:param% OR e.username like %:param%")
 	Page<Author> findByNameParams(Pageable pageable, String param);

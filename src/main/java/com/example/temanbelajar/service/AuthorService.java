@@ -10,6 +10,7 @@ import com.example.temanbelajar.model.Author;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * AuthorService
@@ -32,6 +33,6 @@ public interface AuthorService {
 
     public Author findByUsername(String username);
 
-   // BCryptPasswordEncoder passwordEncoder();
+    BCryptPasswordEncoder passwordEncoder();
     
 }

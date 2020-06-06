@@ -1,6 +1,7 @@
 package com.example.temanbelajar.controller;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
@@ -18,10 +19,12 @@ import com.example.temanbelajar.dto.response.OauthResponseDto;
 import com.example.temanbelajar.dto.response.PasswordResponseUpdateDto;
 import com.example.temanbelajar.model.Author;
 import com.example.temanbelajar.service.AuthorService;
+import com.example.temanbelajar.service.roleMenuService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +41,7 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +52,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+
 
 /**
  * AuthorController
@@ -68,7 +74,10 @@ public class AuthorController {
     @Autowired
     public TokenStore tokenStore() {
         return new JdbcTokenStore(dataSource);
-	}
+    }
+    
+    @Autowired
+    private roleMenuService roleMenuService;
 
     @Autowired
 	private AuthenticationManager authenticationManager;
@@ -255,6 +264,21 @@ public class AuthorController {
 
 		OAuth2AccessToken token = tokenServices().createAccessToken(authenticationRequest);
 
+        Map<String, Object> adInfo = new HashMap<>();
+
+        adInfo.put("role", null);
+        
+        try {
+
+            Author author = (Author) authentication.getPrincipal();
+            
+			adInfo.put("role", author.getRole());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		((DefaultOAuth2AccessToken) token).setAdditionalInformation(adInfo);
 
 		return token;
     } 
